@@ -1,1 +1,15 @@
-Placeholder for toml file
+[project]
+
+name = "project-recommender"
+version = "0.0.1"
+description = "TF-IDF project recommender with NLP"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Thomas Shaw", "Oliver Staples", "Vaideha Sathe" }]
+
+dependencies = [
+  "pdfminer.six>=20221105",
+  "pandas>=1.5",
+  "scikit-learn>=1.2",
+  "nltk>=3.8"
+]
