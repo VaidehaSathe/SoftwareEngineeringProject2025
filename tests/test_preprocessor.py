@@ -3,7 +3,9 @@
 def test_data_preprocessor():
     import pandas as pd
     from project_recommender.preprocessor import data_preprocessor
-    df = pd.read_csv('data/preprocessor_mock-data/books_mock_data.csv')
+    df = pd.read_csv("src/project_recommender/parsed.csv")
     processed_df = data_preprocessor(df)
-    print(processed_df[['description', 'tokenized_description']].head())
-    processed_df.to_csv('data/preprocessor_mock-data/books_tokenized_mock_data.csv', index=False)   
+    print(processed_df[['Description', 'tokenized_description']].head())
+    processed_df.to_csv('data/preprocessor_mock-data/tokenized_parsed.csv', index=False)   
+
+test_data_preprocessor()

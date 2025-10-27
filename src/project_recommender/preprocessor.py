@@ -70,5 +70,3 @@ def query_preprocessor(query):
     """
     processed_query = preprocess_text(query)
     return processed_query
-
-
