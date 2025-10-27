@@ -5,5 +5,4 @@ def pdf_load(input_pdf):
     output_txt=input_pdf.rsplit('.', 1)[0] + '.txt'
     with open(output_txt, 'w', encoding='utf-8') as f:
         f.write(text)
-    return output_txt
-
+    return text
