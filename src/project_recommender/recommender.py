@@ -1,6 +1,8 @@
 # Placeholder for recommender script
 # Functionality: (Data.Description) tokenized text + (User Query) tokenized text -> (Recommendations) list of Data.ProjectTitle strings
 
+import pandas as pd
+
 from preprocessor import query_preprocessor
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
