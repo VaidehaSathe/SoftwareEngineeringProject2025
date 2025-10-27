@@ -2,7 +2,7 @@
 # Date: 27/10/2025 
 #--------------------------------------------------------#
 # Description: This module contains takes a string or .txt file as a input and returns a dataframe object.
-# Functionality: Raw text from a PDF --> pandas df
+# Functionality: Raw text from a PDF --> pandas df with columns (title, description)
 # text_to_projects_df_from_string: takes 100 words of a string input (the description of the project)
 # text_to_projects_df: same as above, but takes a .txt input
 #--------------------------------------------------------#
@@ -12,6 +12,13 @@ import pandas as pd
 from typing import List
 
 
+"""
+This block defines a regex pattern that the extracor uses to find pairs of "Project Titles"
+and "Descriptions".
+
+This will scan through all lines in text and gives two groups by matching literal words: 
+title (the text after "Project Title"S); and desc (the text after "Description"). 
+"""
 _PROJECT_BLOCK_RE = re.compile(
     r'Project\s*Title:\s*(?P<title>.*?)\n\s*Description:\s*(?P<desc>.*?)(?=\n\s*Project\s*Title:|$)',
     re.DOTALL | re.IGNORECASE
