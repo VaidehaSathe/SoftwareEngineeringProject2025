@@ -45,7 +45,7 @@ def text_to_projects_df_from_string(text: str, max_words: int = 100) -> pd.DataF
         desc = re.sub(r'\s+', ' ', desc.strip())
         if max_words is not None and max_words > 0:
             desc = " ".join(desc.split()[:max_words])
-        rows.append({"Title": title.strip(), "Description": desc})
+        rows.append({"title": title.strip(), "description": desc})
 
     if not rows:
         raise ValueError("No projects found. Check that your text uses 'Project Title:' and 'Description:' labels.")

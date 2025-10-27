@@ -8,7 +8,7 @@ version = "0.0.1"
 description = "TF-IDF project recommender with NLP"
 readme = "README.md"
 license = { text = "MIT" }
-authors = [{ name = "Thomas Shaw", "Oliver Staples", "Vaideha Sathe" }]
+authors = [{ name = "Thomas Shaw, Oliver Staples, Vaideha Sathe" }]
 
 dependencies = [
   "pdfminer.six>=20221105",
