@@ -1,1 +1,21 @@
-Placeholder for toml file
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "project-recommender"
+version = "0.0.1"
+description = "TF-IDF project recommender with NLP"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Thomas Shaw", "Oliver Staples", "Vaideha Sathe" }]
+
+dependencies = [
+  "pdfminer.six>=20221105",
+  "pandas>=1.5",
+  "scikit-learn>=1.2",
+  "nltk>=3.9.2"
+]
+
+[project.urls]
+Homepage = "https://github.com/VaidehaSathe/SoftwareEngineeringProject2025"
