@@ -1,1 +1,2 @@
-placeholder for ignore file
+# Ignore venv
+venv/
