@@ -7,7 +7,7 @@ import sys
 """
 To write out a .csv python cli.py ../../data/fake-project-list.pdf --write-txt -o parsed.csv
 To read a .txt file python cli.py ../../data/fake-project-list.txt
-To read a PDF  python cli.py ../../data/fake-project-list.txt
+To read a PDF file python cli.py ../../data/fake-project-list.pdf
 """
 
 from pdf_loader import pdf_load
@@ -52,10 +52,16 @@ def main():
         print(f"[cli] extractor failed: {e}", file=sys.stderr)
         sys.exit(3)
 
-    # 3) output: print or save based on args
+        # 3) output: print or save based on args
     if args.output:
-        out = Path(args.output)
+        # figure out where to save
+        repo_root = Path(__file__).resolve().parents[2]  # goes up from src/project_recommender to project root
+        data_dir = repo_root / "data"
+        data_dir.mkdir(exist_ok=True)
+
+        out = data_dir / args.output
         suf = out.suffix.lower()
+
         if suf == ".csv":
             df.to_csv(out, index=False)
             print(f"[cli] wrote CSV to {out}")
@@ -64,11 +70,10 @@ def main():
             print(f"[cli] wrote JSON to {out}")
         else:
             # default to CSV if unknown extension
-            df.to_csv(out.with_suffix(".csv"), index=False)
-            print(f"[cli] unknown extension; wrote CSV to {out.with_suffix('.csv')}")
+            out = out.with_suffix(".csv")
+            df.to_csv(out, index=False)
+            print(f"[cli] wrote CSV to {out}")
     else:
-        # compact print
-        # make wide enough for long descriptions; adjust or remove if you prefer default pandas display
         import pandas as _pd
         _pd.set_option("display.max_colwidth", 300)
         print(df.to_string(index=False))
