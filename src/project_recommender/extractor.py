@@ -1,21 +1,24 @@
-# extractor.py
+
+# Date: 27/10/2025 
+#--------------------------------------------------------#
+# Description: This module contains takes a string or .txt file as a input and returns a dataframe object.
+# Functionality: Raw text from a PDF --> pandas df with columns (title, description)
+# text_to_projects_df_from_string: takes 100 words of a string input (the description of the project)
+# text_to_projects_df: same as above, but takes a .txt input
+#--------------------------------------------------------#
+
 import re
 import pandas as pd
 from typing import List
 
+
 """
-This file parses project listings in this format:
+This block defines a regex pattern that the extracor uses to find pairs of "Project Titles"
+and "Descriptions".
 
-Project Title: Project 1
-Description: This is a project that takes ...
-
-Project Title: Project 2
-Description: Another project...
-
-It exposes a function that accepts a text string, and a backwards-compatible
-function that reads from a .txt file path.
+This will scan through all lines in text and gives two groups by matching literal words: 
+title (the text after "Project Title"S); and desc (the text after "Description"). 
 """
-
 _PROJECT_BLOCK_RE = re.compile(
     r'Project\s*Title:\s*(?P<title>.*?)\n\s*Description:\s*(?P<desc>.*?)(?=\n\s*Project\s*Title:|$)',
     re.DOTALL | re.IGNORECASE
@@ -28,10 +31,10 @@ def text_to_projects_df_from_string(text: str, max_words: int = 100) -> pd.DataF
 
     Args:
         text: full text containing one or more Project Title / Description blocks
-        max_words: maximum words to keep for description (truncate longer descriptions)
+        max_words: maximum words to keep for description (arbitrary cutoff of long descriptions)
 
     Returns:
-        pd.DataFrame with columns ["Title", "Description"]
+        pd.DataFrame with columns ["title", "description"]
     """
     if not isinstance(text, str):
         raise TypeError("text must be a string")
