@@ -60,7 +60,7 @@ recommend "query text here" --tokenized-csv --amount
 4. All
 Does all of above.
 
-# Developer Usage
+## Developer Usage
 PYTHONPATH=src python -m project_recommender.cli <subcommand> [options]
 # Process all PDFs
 PYTHONPATH=src python -m project_recommender.cli process
@@ -79,3 +79,12 @@ PYTHONPATH=src python -m project_recommender.cli all
 # Full pipeline for a specific PDF and then recommend 7 results
 PYTHONPATH=src python -m project_recommender.cli all mydoc.pdf -o data/project_CSVs/out.csv --query "epidemiology machine learning" --amount 7
 
+## User commands
+Strictly speaking, these commands should be invoked with 
+
+python -m project_recommender.cli <subcommand> [options]
+
+This should be possible later.
+To run this command instead, go to the root and do:
+
+pip install -e .
