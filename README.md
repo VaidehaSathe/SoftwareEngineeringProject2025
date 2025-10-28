@@ -24,3 +24,10 @@ Replaces any contractions with their original words.
 ## Recommender
 
 ## CLI
+
+```
+python -m project_recommender.cli process              # process PDFs
+python -m project_recommender.cli tokenize projects_summary.csv
+python -m project_recommender.cli recommend "I want epi projects"
+python -m project_recommender.cli all --query "ml for biology"
+```
