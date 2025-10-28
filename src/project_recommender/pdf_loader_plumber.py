@@ -56,9 +56,24 @@ logger.debug("CSV_OUTPUT_DIR: %s", CSV_OUTPUT_DIR)
 
 # --- helpers ---
 def normalize(s: Optional[str]) -> str:
+    """Normalise whitespace and convert None to empty string (further cleaning done later)."""
     if s is None:
         return ""
     return re.sub(r"\s+", " ", str(s)).strip()
+
+def clean_entry(value):
+    """
+    Convert None/NaN/whitespace-only values to the literal string "empty",
+    otherwise strip and return the string value.
+    """
+    import pandas as _pd
+    if value is None:
+        return "empty"
+    # pandas NaN are floats
+    if isinstance(value, float) and _pd.isna(value):
+        return "empty"
+    s = str(value).strip()
+    return s if s else "empty"
 
 def is_label_cell(text: Optional[str], target: str) -> bool:
     if not text:
@@ -215,6 +230,8 @@ def parse_pdf(pdf_path: Union[str, Path]) -> List[Dict[str, str]]:
                 if extracted:
                     all_projects.extend(extracted)
 
+    # note: we intentionally do not replace empties here; final cleaning occurs when
+    # constructing the DataFrame so every output cell is guaranteed to be a string "empty" if blank.
     for p in all_projects:
         for k, v in list(p.items()):
             p[k] = normalize(v)
@@ -253,11 +270,16 @@ def process_all_pdfs_to_one_csv(output_path: Optional[Union[str, Path]] = None) 
     else:
         df = pd.DataFrame(columns=["title", "primary_theme", "supervisors", "description"])
 
+    # ensure required columns exist
     for col in ["title", "primary_theme", "supervisors", "description"]:
         if col not in df.columns:
             df[col] = ""
 
     df = df[["title", "primary_theme", "supervisors", "description"]]
+
+    # --- CLEAN: replace empty/missing/NaN/whitespace-only values with the string "empty" ---
+    df = df.applymap(clean_entry)
+
     df.to_csv(output_path, index=False)
     logger.info("Wrote %d rows to: %s", len(df), output_path.resolve())
     return output_path.resolve()
@@ -289,6 +311,10 @@ def process_pdf_to_csv(pdf_path: Union[str, Path], output_path: Optional[Union[s
             df[col] = ""
 
     df = df[["title", "primary_theme", "supervisors", "description"]]
+
+    # --- CLEAN: replace empty/missing/NaN/whitespace-only values with the string "empty" ---
+    df = df.applymap(clean_entry)
+
     df.to_csv(output_path, index=False)
     logger.info("Wrote %d rows to: %s", len(df), output_path.resolve())
     return output_path.resolve()
