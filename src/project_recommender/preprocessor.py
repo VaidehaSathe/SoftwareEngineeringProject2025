@@ -47,17 +47,21 @@ def preprocess_text(text):
     output_text = output_text.replace("'d", " would")
     return output_text
 
-def data_preprocessor(dataframe):
+def data_preprocessor(filename):
     """
     Preprocesses the 'description' column of the input DataFrame.
     
     Args:
-        dataframe (pd.DataFrame): The input DataFrame with a 'description' column.
+        CSV File (.csv): The project list CSV name from the data/project_CSVs folder.
+    Saves:
+        CSV File (.csv): A new CSV with an additional 'tokenized_description' column in data/tokenized_CSVs folder.
     Returns:
-        dataframe (pd.DataFrame): The DataFrame with a new preprocessed 'tokenized_description' column.
+        N/A
     """
+    import pandas as pd
+    dataframe = pd.read_csv(f'data/project_CSVs/{filename}'))
     dataframe['tokenized_description'] = dataframe['description'].apply(preprocess_text)
-    return dataframe
+    dataframe.to_csv(f'data/tokenized_CSVs/{filename}', index=False)
 
 def query_preprocessor(query):
     """
@@ -66,7 +70,7 @@ def query_preprocessor(query):
     Args:
         query (str): The input query string to preprocess.
     Returns:
-        processed_query (str): The preprocessed query string.
+        tokenized_query (str): The tokenized query string.
     """
     processed_query = preprocess_text(query)
     return processed_query
