@@ -1,82 +1,224 @@
-# cli.py
+#!/usr/bin/env python3
+"""
+Lightweight CLI to run PDF -> CSV -> Tokenize -> Recommend pipeline.
+
+Usage examples (from repo root):
+
+# Process all PDFs in data/raw_PDFs and write combined CSV:
+python -m project_recommender.cli process
+
+# Process a specific PDF (filename looked for in data/raw_PDFs):
+python -m project_recommender.cli process somefile.pdf -o data/project_CSVs/my_out.csv
+
+# Tokenize an existing CSV (filename lives in data/project_CSVs/ or pass a path)
+python -m project_recommender.cli tokenize projects_summary.csv
+
+# Recommend (requires a tokenized CSV in data/tokenized_CSVs/ or pass path):
+python -m project_recommender.cli recommend "I want epidemiology projects"
+
+# Run full pipeline (process -> tokenize -> recommend)
+python -m project_recommender.cli all --query "machine learning for biology"
+"""
+from __future__ import annotations
+
 import argparse
+import importlib
+import logging
 from pathlib import Path
+import shutil
+import contextlib
+
+logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+logger = logging.getLogger(__name__)
+
+
+import importlib
 import sys
+from pathlib import Path
 
-
-"""
-To write out a .csv python cli.py ../../data/fake-project-list.pdf --write-txt -o parsed.csv
-To read a .txt file python cli.py ../../data/fake-project-list.txt
-To read a PDF file python cli.py ../../data/fake-project-list.pdf
-"""
-
-from pdf_loader import pdf_load
-from extractor import text_to_projects_df_from_string
-
-def resolve_path_maybe_repo_root(p: Path) -> Path:
-    """If path exists return it; else try repo root (two levels up) + p."""
-    if p.exists():
-        return p
-    repo_root = Path(__file__).resolve().parents[2]  # adjust for src/project_recommender layout
-    alt = (repo_root / p).resolve()
-    return alt if alt.exists() else p
-
-def main():
-    p = argparse.ArgumentParser(description="Minimal CLI: PDF -> extractor -> DataFrame")
-    p.add_argument("input", help="Path to .pdf or .txt file")
-    p.add_argument("-o", "--output", help="Optional output file (.csv or .json). If omitted prints DataFrame.")
-    p.add_argument("--write-txt", action="store_true",
-                   help="If input is PDF, also write a sidecar .txt file using pdf_loader (default: no)")
-    args = p.parse_args()
-
-    input_path = Path(args.input)
-    input_path = resolve_path_maybe_repo_root(input_path)
-
-    if not input_path.exists():
-        print(f"File not found: {input_path}", file=sys.stderr)
-        sys.exit(2)
-
-    # 1) obtain text (PDF -> pdf_loader, TXT -> read directly)
-    if input_path.suffix.lower() == ".pdf":
-        # pdf_load returns (text, output_txt_path)
-        text, txt_path = pdf_load(str(input_path), write_txt=args.write_txt)
-        print(f"[cli] pdf_loader returned {len(text)} characters (sidecar: {txt_path or 'not written'})")
-    else:
-        text = input_path.read_text(encoding="utf-8")
-        print(f"[cli] read text file {input_path} ({len(text)} characters)")
-
-    # 2) pass text string into extractor to get DataFrame
+def _lazy_import_module(module_basename: str):
+    """
+    Import a module as project_recommender.<module_basename>.
+    Falls back to adding src/ to sys.path if needed.
+    """
+    pkg_name = "project_recommender"
+    full_name = f"{pkg_name}.{module_basename}"
     try:
-        df = text_to_projects_df_from_string(text)
-    except Exception as e:
-        print(f"[cli] extractor failed: {e}", file=sys.stderr)
-        sys.exit(3)
+        return importlib.import_module(full_name)
+    except ModuleNotFoundError:
+        # try to dynamically add src/ to sys.path if running from repo root
+        here = Path(__file__).resolve()
+        src_dir = here.parents[1]  # ~/SoftwareEngineeringProject2025/src
+        if str(src_dir) not in sys.path:
+            sys.path.insert(0, str(src_dir))
+        try:
+            return importlib.import_module(full_name)
+        except ModuleNotFoundError:
+            # final fallback
+            return importlib.import_module(module_basename)
 
-        # 3) output: print or save based on args
-    if args.output:
-        # figure out where to save
-        repo_root = Path(__file__).resolve().parents[2]  # goes up from src/project_recommender to project root
-        data_dir = repo_root / "data"
-        data_dir.mkdir(exist_ok=True)
 
-        out = data_dir / args.output
-        suf = out.suffix.lower()
+@contextlib.contextmanager
+def _push_cwd(p: Path):
+    """Temporarily chdir to p (Path) and restore afterwards."""
+    import os
 
-        if suf == ".csv":
-            df.to_csv(out, index=False)
-            print(f"[cli] wrote CSV to {out}")
-        elif suf == ".json":
-            df.to_json(out, orient="records", indent=2)
-            print(f"[cli] wrote JSON to {out}")
-        else:
-            # default to CSV if unknown extension
-            out = out.with_suffix(".csv")
-            df.to_csv(out, index=False)
-            print(f"[cli] wrote CSV to {out}")
+    prev = Path.cwd()
+    try:
+        os.chdir(p)
+        yield
+    finally:
+        os.chdir(prev)
+
+
+def ensure_in_project_csvs(candidate: Path, pdf_loader):
+    """
+    Ensure `candidate` CSV is present in pdf_loader.CSV_OUTPUT_DIR.
+    If candidate is already inside that dir, return it.
+    If candidate is a path elsewhere, copy it into CSV_OUTPUT_DIR and return the target path.
+    If candidate doesn't exist but is a plain filename, return CSV_OUTPUT_DIR / candidate (may not exist yet).
+    """
+    csv_dir = pdf_loader.CSV_OUTPUT_DIR
+    csv_dir.mkdir(parents=True, exist_ok=True)
+
+    candidate = Path(candidate)
+    if candidate.exists():
+        # if already in desired dir, return as-is
+        try:
+            if candidate.resolve().parent == csv_dir.resolve():
+                return candidate
+        except Exception:
+            pass
+        # copy into dir (overwrite if exists)
+        target = csv_dir / candidate.name
+        shutil.copy(candidate, target)
+        logger.info("Copied %s -> %s", candidate, target)
+        return target
     else:
-        import pandas as _pd
-        _pd.set_option("display.max_colwidth", 300)
-        print(df.to_string(index=False))
+        # not an existing path: treat as filename inside CSV_OUTPUT_DIR
+        return csv_dir / candidate.name
+
+
+def cmd_process(args: argparse.Namespace) -> Path:
+    """
+    Process PDFs into a single CSV (or single PDF -> CSV). Returns the produced CSV Path.
+    """
+    pdf_loader = _lazy_import_module("pdf_loader_plumber")
+    if args.pdf is None:
+        out = pdf_loader.process_all_pdfs_to_one_csv(args.output)
+    else:
+        out = pdf_loader.process_pdf_to_csv(Path(args.pdf), args.output)
+    logger.info("CSV written: %s", out)
+    return Path(out)
+
+
+def cmd_tokenize(args: argparse.Namespace) -> Path:
+    """
+    Tokenize a CSV into data/tokenized_CSVs/.
+    `args.csv` may be a filename (in data/project_CSVs/) or a path; we ensure the CSV is in project_CSVs.
+    """
+    pdf_loader = _lazy_import_module("pdf_loader_plumber")
+    pre = _lazy_import_module("preprocessor")
+
+    # ensure CSV lives in project_CSVs (preprocessor expects reading from data/project_CSVs/{filename})
+    csv_candidate = Path(args.csv or "projects_summary.csv")
+    csv_in_project_dir = ensure_in_project_csvs(csv_candidate, pdf_loader)
+
+    # preprocessor.data_preprocessor expects a filename (reads from data/project_CSVs/{filename})
+    # so call it from repo root to preserve relative paths
+    repo_root = pdf_loader.REPO_ROOT
+    with _push_cwd(repo_root):
+        pre.data_preprocessor(csv_in_project_dir.name)
+
+    tokenized_dir = repo_root / "data" / "tokenized_CSVs"
+    tokenized_path = tokenized_dir / csv_in_project_dir.name
+    logger.info("Tokenized CSV: %s", tokenized_path)
+    return tokenized_path.resolve()
+
+
+def cmd_recommend(args: argparse.Namespace) -> str:
+    """
+    Recommend using a tokenized CSV. If tokenized_csv not provided, default to
+    data/tokenized_CSVs/projects_summary.csv inside the repo root.
+    """
+    pdf_loader = _lazy_import_module("pdf_loader_plumber")
+    rec = _lazy_import_module("recommender")
+
+    if args.tokenized_csv:
+        token_csv = Path(args.tokenized_csv)
+        if not token_csv.exists():
+            # maybe it's in the repo tokenized dir
+            token_csv = pdf_loader.REPO_ROOT / "data" / "tokenized_CSVs" / token_csv.name
+    else:
+        token_csv = pdf_loader.REPO_ROOT / "data" / "tokenized_CSVs" / "projects_summary.csv"
+
+    if not token_csv.exists():
+        logger.error("Tokenized CSV not found: %s", token_csv)
+        raise FileNotFoundError(token_csv)
+
+    result = rec.recommend(args.query, str(token_csv))
+    # print for CLI use
+    print(result)
+    return result
+
+
+def cmd_all(args: argparse.Namespace) -> Path:
+    """
+    Run full pipeline: process -> tokenize -> (optional recommend).
+    Returns tokenized CSV path (or raises).
+    """
+    # 1) process
+    out_csv = cmd_process(argparse.Namespace(pdf=args.pdf, output=args.output))
+
+    # 2) tokenize (pass filename)
+    tokenized_path = cmd_tokenize(argparse.Namespace(csv=Path(out_csv).name))
+
+    # 3) optional recommend
+    if getattr(args, "query", None):
+        cmd_recommend(argparse.Namespace(query=args.query, tokenized_csv=str(tokenized_path)))
+    else:
+        logger.info("Pipeline finished. Tokenized CSV at: %s", tokenized_path)
+
+    return Path(tokenized_path)
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(prog="project-recommender", description="PDF -> CSV -> Tokenize -> Recommend CLI")
+    sub = parser.add_subparsers(dest="cmd", required=True)
+
+    p = sub.add_parser("process", help="Process PDF(s) into CSV(s)")
+    p.add_argument("pdf", nargs="?", default=None, help="Optional PDF filename in data/raw_PDFs to process. If omitted, all PDFs are processed.")
+    p.add_argument("-o", "--output", help="Explicit output CSV path (optional)", default=None)
+    p.set_defaults(func=cmd_process)
+
+    t = sub.add_parser("tokenize", help="Tokenize a project CSV into data/tokenized_CSVs")
+    t.add_argument("csv", nargs="?", default="projects_summary.csv", help="CSV filename or path in data/project_CSVs to tokenize (default projects_summary.csv)")
+    t.set_defaults(func=cmd_tokenize)
+
+    r = sub.add_parser("recommend", help="Get a project recommendation from a tokenized CSV")
+    r.add_argument("query", help="User query string")
+    r.add_argument("--tokenized-csv", dest="tokenized_csv", help="Path to tokenized CSV (optional)", default=None)
+    r.set_defaults(func=cmd_recommend)
+
+    a = sub.add_parser("all", help="Run full pipeline: process -> tokenize -> (recommend)")
+    a.add_argument("pdf", nargs="?", default=None, help="Optional PDF filename to process (default: all PDFs)")
+    a.add_argument("-o", "--output", help="Explicit CSV output path for processing step (optional)", default=None)
+    a.add_argument("--query", help="Optional user query to run recommender at the end", default=None)
+    a.set_defaults(func=cmd_all)
+
+    return parser
+
+
+def main(argv=None) -> int:
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    try:
+        args.func(args)
+        return 0
+    except Exception as e:
+        logger.error("Error: %s", e)
+        return 2
+
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
