@@ -1,3 +1,5 @@
+"""Tests for the preprocessor module in the project_recommender package."""
+
 import pytest
 import pandas as pd
 from src.project_recommender import preprocessor as ppr

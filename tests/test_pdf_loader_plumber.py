@@ -1,3 +1,5 @@
+"""Tests for the pdf_loader_plumber module in the project_recommender package."""
+
 import pytest
 import pandas as pd
 
