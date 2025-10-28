@@ -1,4 +1,11 @@
-# pdf_loader.py
+# Date: 28/10/2025 
+#--------------------------------------------------------#
+# Description: This module takes a PDF and returns raw text
+# Functionality: PDF (filepath) --> raw text (string); optionally a .txt file
+# _clean_extracted_text: removes weird artifacts from reading PDFs like line breaks and broken characters
+# pdf_load: takes a PDF filepath and runs it through above to return string and optionally .txt file
+#--------------------------------------------------------#
+
 from pdfminer.high_level import extract_text
 from pathlib import Path
 import re
