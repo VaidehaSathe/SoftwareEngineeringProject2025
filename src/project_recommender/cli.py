@@ -38,24 +38,43 @@ from pathlib import Path
 
 def _lazy_import_module(module_basename: str):
     """
-    Import a module as project_recommender.<module_basename>.
-    Falls back to adding src/ to sys.path if needed.
+    Import module as project_recommender.<module_basename>.
+    If needed, add src/ to sys.path (calculated relative to this file).
+    Raises ModuleNotFoundError with helpful diagnostics if import fails.
     """
     pkg_name = "project_recommender"
     full_name = f"{pkg_name}.{module_basename}"
+
+    # 1) Try package import first (normal case)
+    try:
+        return importlib.import_module(full_name)
+    except ModuleNotFoundError as e_pkg:
+        # Continue to try to make it importable by adding src/
+        pass
+
+    # 2) Compute src directory (this file is at src/project_recommender/cli.py)
+    here = Path(__file__).resolve()
+    # here.parents[1] -> src (since here is src/project_recommender/cli.py)
+    src_dir = here.parents[1]
+    if str(src_dir) not in sys.path:
+        sys.path.insert(0, str(src_dir))
+
+    # 3) Try again
     try:
         return importlib.import_module(full_name)
     except ModuleNotFoundError:
-        # try to dynamically add src/ to sys.path if running from repo root
-        here = Path(__file__).resolve()
-        src_dir = here.parents[1]  # ~/SoftwareEngineeringProject2025/src
-        if str(src_dir) not in sys.path:
-            sys.path.insert(0, str(src_dir))
-        try:
-            return importlib.import_module(full_name)
-        except ModuleNotFoundError:
-            # final fallback
-            return importlib.import_module(module_basename)
+        # 4) Final helpful fallback: show diagnostics and raise a clear error
+        msg = (
+            f"Could not import {full_name!r}.\n"
+            f"Checked package import and added src dir: {src_dir!s}\n"
+            f"sys.path (first entries):\n  " + "\n  ".join(map(str, sys.path[:6])) + "\n\n"
+            "Possible fixes:\n"
+            "  - run this from the project root (the directory that contains 'src/')\n"
+            "  - set PYTHONPATH=src when invoking python\n"
+            "  - create src/project_recommender/__init__.py if missing\n"
+            "  - install the package in editable mode: pip install -e .\n"
+        )
+        raise ModuleNotFoundError(msg)
 
 
 @contextlib.contextmanager
@@ -156,10 +175,16 @@ def cmd_recommend(args: argparse.Namespace) -> str:
         logger.error("Tokenized CSV not found: %s", token_csv)
         raise FileNotFoundError(token_csv)
 
-    result = rec.recommend(args.query, str(token_csv))
+    # Ensure amount is present and is an int
+    amount = int(getattr(args, "amount", 10) or 10)
+    logger.info("Running recommendation: query=%r, tokenized_csv=%s, amount=%d",
+                args.query, token_csv, amount)
+
+    result = rec.recommend(args.query, str(token_csv), amount_wanted=amount)
     # print for CLI use
     print(result)
     return result
+
 
 
 def cmd_all(args: argparse.Namespace) -> Path:
@@ -175,7 +200,13 @@ def cmd_all(args: argparse.Namespace) -> Path:
 
     # 3) optional recommend
     if getattr(args, "query", None):
-        cmd_recommend(argparse.Namespace(query=args.query, tokenized_csv=str(tokenized_path)))
+        # forward amount from top-level args to the recommend call
+        cmd_recommend(argparse.Namespace(
+            query=args.query,
+            tokenized_csv=str(tokenized_path),
+            amount=getattr(args, "amount", 10)
+        ))
+
     else:
         logger.info("Pipeline finished. Tokenized CSV at: %s", tokenized_path)
 
@@ -198,13 +229,19 @@ def build_parser() -> argparse.ArgumentParser:
     r = sub.add_parser("recommend", help="Get a project recommendation from a tokenized CSV")
     r.add_argument("query", help="User query string")
     r.add_argument("--tokenized-csv", dest="tokenized_csv", help="Path to tokenized CSV (optional)", default=None)
+    r.add_argument("--amount", "-n", dest="amount", type=int, default=10,
+                help="Number of recommendations to return (default: 10)")
     r.set_defaults(func=cmd_recommend)
+
 
     a = sub.add_parser("all", help="Run full pipeline: process -> tokenize -> (recommend)")
     a.add_argument("pdf", nargs="?", default=None, help="Optional PDF filename to process (default: all PDFs)")
     a.add_argument("-o", "--output", help="Explicit CSV output path for processing step (optional)", default=None)
     a.add_argument("--query", help="Optional user query to run recommender at the end", default=None)
+    a.add_argument("--amount", "-n", dest="amount", type=int, default=10,
+                help="Number of recommendations to return when running with --query (default: 10)")
     a.set_defaults(func=cmd_all)
+
 
     return parser
 
