@@ -10,9 +10,20 @@
 # This has the keys (['title', 'primary_theme', 'supervisors', 'score'] 
 # It returns this new dataframe object. 
 
+# DO NOT RUN THIS FILE DIRECTLY. If you do, remove the dot from from .preprocessor
+# When running this file, go to /SoftwareEngineeringProject2025, then 
+# PYTHONPATH=src python -m project_recommender.cli recommend "I want biology projects" --tokenized-csv tokenized_projects_summary.csv
+
+# Alternatively, do 
+# # from project root (/SoftwareEngineeringProject2025)
+# pip install -e .
+# python -m project_recommender.cli recommend "I want biology projects"
+
+
+
 # Test code at bottom. 
 
-from preprocessor import query_preprocessor
+from .preprocessor import query_preprocessor
 import pandas as pd
 import nltk
 import numpy as np
