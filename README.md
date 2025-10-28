@@ -32,12 +32,12 @@ There are four commands: -process, -tokenize, recommend, -all
 1. Process
 This takes PDFs in data/raw_PDFs/ and write CSV(s) into data/project_CSVs
 
-'''
+'''python
 process -o [pdf] 
-
+'''
 -o is an optional field. It outputs the CSV location.
 [pdf] is an optional field, it takes the name of the PDF file. Left empty, it will read all PDFs in raw_PDFs.
-'''
+
 
 2. Tokenize
 This takes a CSV file in data/project_CSVs and tokenizes the description, writing another file in data/tonkeized_CSVs
