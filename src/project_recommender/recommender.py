@@ -124,13 +124,13 @@ def resolve_data_path(path_like: str) -> Path:
 # 8  A46 Extracellular Sphingolipids as Drivers and...  ...  0.286518
 # 9  A57 Using super-resolution microscopy to under...  ...  0.271357
 
-projs = recommend(
-    "I want to know about biology cell movement and use machine learning with python for mathematical modelling", 
-    tokenized_data_csv=resolve_data_path("tokenized_projects_summary.csv"),
-    amount_wanted=10)
+# projs = recommend(
+#     "I want to know about biology cell movement and use machine learning with python for mathematical modelling", 
+#     tokenized_data_csv=resolve_data_path("tokenized_projects_summary.csv"),
+#     amount_wanted=10)
 
-# Prints the whole dataframe object (10 rows x N cols (user specified))
-print(projs)
+# # Prints the whole dataframe object (10 rows x N cols (user specified))
+# print(projs)
 
-# Checks that the column titles are correct (Index(['title', 'primary_theme', 'supervisors', 'score'], dtype='object'))
-print(projs.keys())
+# # Checks that the column titles are correct (Index(['title', 'primary_theme', 'supervisors', 'score'], dtype='object'))
+# print(projs.keys())
