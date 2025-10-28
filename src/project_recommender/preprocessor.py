@@ -58,9 +58,20 @@ def data_preprocessor(filename):
         None
     """
     import pandas as pd
+
+        # The input (original) file
     dataframe = pd.read_csv(f'data/project_CSVs/{filename}')
+
+    # Tokenize the description column
     dataframe['tokenized_description'] = dataframe['description'].apply(preprocess_text)
-    dataframe.to_csv(f'data/tokenized_CSVs/{filename}', index=False)
+
+    # The output (new) file name
+    new_filename = f"tokenized_{filename}"
+
+    # Save to tokenized_CSVs directory
+    dataframe.to_csv(f'data/tokenized_CSVs/{new_filename}', index=False)
+
+    # print(f"✅ Tokenized file saved as data/tokenized_CSVs/{new_filename}")
 
 def query_preprocessor(query):
     """
