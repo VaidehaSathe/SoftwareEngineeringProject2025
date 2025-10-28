@@ -59,7 +59,7 @@ def data_preprocessor(filename):
         N/A
     """
     import pandas as pd
-    dataframe = pd.read_csv(f'data/project_CSVs/{filename}'))
+    dataframe = pd.read_csv(f'data/project_CSVs/{filename}')
     dataframe['tokenized_description'] = dataframe['description'].apply(preprocess_text)
     dataframe.to_csv(f'data/tokenized_CSVs/{filename}', index=False)
 
