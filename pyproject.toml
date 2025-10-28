@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools", "wheel"]
+requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -8,31 +8,36 @@ version = "0.0.1"
 description = "TF-IDF project recommender with NLP"
 readme = "README.md"
 license = { text = "MIT" }
-authors = [{ name = "Thomas Shaw, Oliver Staples, Vaideha Sathe" }]
+authors = [
+  { name = "Thomas Shaw" },
+  { name = "Oliver Staples" },
+  { name = "Vaideha Sathe" }
+]
 
 dependencies = [
-  click==8.3.0,
-  colorama==0.4.6,
-  iniconfig==2.3.0,
-  joblib==1.5.2,
-  nltk==3.9.2,
-  numpy==2.3.4,
-  packaging==25.0,
-  pandas==2.3.3,
-  pdfplumber==0.11.7,
-  pluggy==1.6.0,
-  Pygments==2.19.2,
-  pytest==8.4.2,
-  python-dateutil==2.9.0.post0,
-  pytz==2025.2,
-  regex==2025.10.23,
-  scipy==1.16.2,
-  six==1.17.0,
-  scikit-learn==1.7.2,
-  tqdm==4.67.1,
-  tzdata==2025.2,
-  wheel==0.45.1
+  "click==8.3.0",
+  "colorama==0.4.6",
+  "iniconfig==2.3.0",
+  "joblib==1.5.2",
+  "nltk==3.9.2",
+  "numpy==2.3.4",
+  "packaging==25.0",
+  "pandas==2.3.3",
+  "pdfplumber==0.11.7",
+  "pluggy==1.6.0",
+  "Pygments==2.19.2",
+  "pytest==8.4.2",
+  "python-dateutil==2.9.0.post0",
+  "pytz==2025.2",
+  "regex==2025.10.23",
+  "scipy==1.16.2",
+  "six==1.17.0",
+  "scikit-learn==1.7.2",
+  "tqdm==4.67.1",
+  "tzdata==2025.2",
+  "wheel==0.45.1"
 ]
 
 [project.urls]
 Homepage = "https://github.com/VaidehaSathe/SoftwareEngineeringProject2025"
+

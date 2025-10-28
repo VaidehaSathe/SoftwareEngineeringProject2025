@@ -1,4 +1,3 @@
-# Author: Vaideha Sathe
 # Date: 27/10/2025 
 #--------------------------------------------------------#
 # Description: This module contains functions to preprocess text data to feed into the recommender module.
