@@ -56,7 +56,7 @@ def data_preprocessor(filename):
     Saves:
         CSV File (.csv): A new CSV with an additional 'tokenized_description' column in data/tokenized_CSVs folder.
     Returns:
-        N/A
+        None
     """
     import pandas as pd
     dataframe = pd.read_csv(f'data/project_CSVs/{filename}')
