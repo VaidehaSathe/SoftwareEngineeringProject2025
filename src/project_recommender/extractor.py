@@ -1,4 +1,4 @@
-
+# This file is OBSOLETE - raw text parsing and extraction is done solely by pdf_loader_plumber
 # Date: 27/10/2025 
 #--------------------------------------------------------#
 # Description: This module contains takes a string or .txt file as a input and returns a dataframe object.
