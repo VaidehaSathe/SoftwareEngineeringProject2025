@@ -1,11 +1,16 @@
 # Date 28/10/2025
-# DESCRIPTION: This function takes a user input as a string,
-# and a .csv file containing tokenized project data,
-# and returns a number of projects (decided by the user) which
-# are most similar to the user input string
+# DESCRIPTION: This function takes three inputs: 
+# 1. a user query, which is a string > 15 words
+# 2. the name of a tokenized .csv file in the tokenized_CSVs folder
+# 3. the number of projects that the user wants, an integer: N
+#
+# It resolves the filepath of the csv file with pathlib. 
+# It vectorizes with TF-IDF and finds cosine similarity between query and tokenized project descriptions.
+# It takes the top N projects by similarity, and creates a new dataframe object. 
+# This has the keys (['title', 'primary_theme', 'supervisors', 'score'] 
+# It returns this new dataframe object. 
 
-
-# Added file handling with Path from pathlib/
+# Test code at bottom. 
 
 from preprocessor import query_preprocessor
 import pandas as pd
@@ -78,6 +83,7 @@ def recommend(user_input,tokenized_data_csv,amount_wanted):
 
         return final_projects
 
+# Clever pathhandling magic
 
 # If this file is located at src/projects_recommend/..., then:
 HERE = Path(__file__).resolve().parent           # src/projects_recommend
