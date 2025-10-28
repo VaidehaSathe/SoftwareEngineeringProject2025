@@ -1,2 +1,9 @@
-# Ignore venv
 venv/
+data/project_CSVs/
+data/tokenized_CSVs/
+data/raw_PDFs/
+.pytest_cache/
+.vscode/
+src/project_recommender/__pycache__/
+tests/__pycache__/
+*.py[cod]
