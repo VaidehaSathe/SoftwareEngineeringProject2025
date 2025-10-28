@@ -25,6 +25,7 @@ Replaces any contractions with their original words.
 
 ## CLI
 
+Process, Tokenize work in the /src/ level, not in /src/project_recommender
 ```
 python -m project_recommender.cli process              # process PDFs
 python -m project_recommender.cli tokenize projects_summary.csv
