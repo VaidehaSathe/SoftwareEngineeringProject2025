@@ -12,14 +12,17 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 tfidfvec = TfidfVectorizer()
 
-def recommend(user_input,tokenized_data):
-    "Takes a user statement and tokenized_data, and returns the"
+def recommend(user_input,tokenized_data_csv):
+    "Takes a user statement and .csv file, and returns the"
     "project title which matches closest to the user statement "
 
     "Args: User statement (e.g. 'I am James, I'm interested in the studying the pandemic)"
-    "and tokenized_data (processed versions of the project descriptions)"
+    "and .csv file containing tokenized data (processed versions of the project descriptions)"
 
     "Returns: The project title which is 'closest' to the user statement"
+    
+    
+    tokenized_data = pd.read_csv(tokenized_data_csv)
 
     #processes the user statement, removes unnecessary words
     user_tokens = query_preprocessor(user_input)  
@@ -41,6 +44,3 @@ def recommend(user_input,tokenized_data):
 
     #returns the title of the project which obtained the highest score
     return tokenized_data['title'][col_best_score]
-
-
-
