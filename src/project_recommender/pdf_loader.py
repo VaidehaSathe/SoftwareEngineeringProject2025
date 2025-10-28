@@ -1,3 +1,4 @@
+# This file is OBSOLETE - raw text parsing and extraction is done solely by pdf_loader_plumber
 # Date: 28/10/2025 
 #--------------------------------------------------------#
 # Description: This module takes a PDF and returns raw text
