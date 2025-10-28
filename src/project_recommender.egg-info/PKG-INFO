@@ -1,0 +1,25 @@
+Metadata-Version: 2.4
+Name: project-recommender
+Version: 0.0.1
+Summary: TF-IDF project recommender with NLP
+Author: Thomas Shaw, Oliver Staples, Vaideha Sathe
+License: MIT
+Project-URL: Homepage, https://github.com/VaidehaSathe/SoftwareEngineeringProject2025
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pdfminer.six>=20221105
+Requires-Dist: pandas>=1.5
+Requires-Dist: scikit-learn>=1.2
+Requires-Dist: nltk>=3.9.2
+Dynamic: license-file
+
+Project Repository for the ILESLA DTP 2025 Software Engineering course.
+
+# DPhil Project Recommender Tool 
+## The Team:
+Thomas Shaw\
+Oliver Staples\
+Vaideha Sathe
+## Problem Statement:
+It is difficult to comprehensively search the large number of available rotation projects in the ILESLA Booklets. Broad sorting of projects into core themes limits search scope to narrower bands and restricts cross-theme project inspiration. This package aims to provide a text-to-text search tool to parse project booklets (in PDF format) and provide recommendations based on a user-created query string.  
+

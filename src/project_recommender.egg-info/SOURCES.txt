@@ -1,0 +1,16 @@
+LICENSE
+README.md
+pyproject.toml
+src/project_recommender/__init__.py
+src/project_recommender/__main__.py
+src/project_recommender/cli.py
+src/project_recommender/extractor.py
+src/project_recommender/pdf_loader.py
+src/project_recommender/preprocessor.py
+src/project_recommender/recommender.py
+src/project_recommender.egg-info/PKG-INFO
+src/project_recommender.egg-info/SOURCES.txt
+src/project_recommender.egg-info/dependency_links.txt
+src/project_recommender.egg-info/requires.txt
+src/project_recommender.egg-info/top_level.txt
+tests/test_extractor.py

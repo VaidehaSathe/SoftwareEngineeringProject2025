@@ -1,0 +1,4 @@
+pdfminer.six>=20221105
+pandas>=1.5
+scikit-learn>=1.2
+nltk>=3.9.2
