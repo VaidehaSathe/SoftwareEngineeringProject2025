@@ -28,9 +28,8 @@ It is difficult to comprehensively search the large number of available rotation
 
 ## CLI
 
-For these to work, you need to be in the root folder. That is, in /SoftwareEngineeringProject2025. Not in /src/, not in /project_recommender/.
 
-There are four commands: ```-process, -tokenize, recommend, -all```
+For these to work, you need to be in the root folder. That is, in /SoftwareEngineeringProject2025. Not in /src/, not in /project_recommender/. The general command line structure is `python -m project_recommender.cli <command> <query>`. There are four commands: ```-process, -tokenize, recommend, -all```
 
 **-process**
 
