@@ -169,7 +169,7 @@ def cmd_recommend(args: argparse.Namespace) -> str:
             # maybe it's in the repo tokenized dir
             token_csv = pdf_loader.REPO_ROOT / "data" / "tokenized_CSVs" / token_csv.name
     else:
-        token_csv = pdf_loader.REPO_ROOT / "data" / "tokenized_CSVs" / "projects_summary.csv"
+        token_csv = pdf_loader.REPO_ROOT / "data" / "tokenized_CSVs" / "tokenized_projects_summary.csv"
 
     if not token_csv.exists():
         logger.error("Tokenized CSV not found: %s", token_csv)
