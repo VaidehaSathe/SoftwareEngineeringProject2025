@@ -28,7 +28,7 @@ It is difficult to comprehensively search the large number of available rotation
 * Provides a command-line interface (CLI) to run the full pipeline: Process PDFs → Tokenize CSVs → Recommend projects.
 * Allows flexible use from the project root with options for specific files, queries, and output locations.
 
-For these to work, you need to be in the root folder in /SoftwareEngineeringProject2025/, not in /project_recommender/. The general command line structure is `python -m project_recommender.cli <command> <query>`, and you need to specify the path based on where you're running the script from. If in /SoftwareEngineeringProject2025/, it should be `PYTHONPATH=src python -m project_recommender.cli <command> <query>`. If in /src/, it should be `PYTHONPATH=src python -m project_recommender.cli <command> <query>`. The former is more reliable for now.
+For these to work, you need to be in the root folder in /SoftwareEngineeringProject2025/, not in /project_recommender/. The general command line structure is `python -m project_recommender.cli -<command> <query>`, and you need to specify the path based on where you're running the script from. If in /SoftwareEngineeringProject2025/, it should be `PYTHONPATH=src python -m project_recommender.cli <command> <query>`. If in /src/, it should be `PYTHONPATH=src python -m project_recommender.cli -<command> <query>`. The former is more reliable for now.
 
 
 There are four commands: ```-process, -tokenize, recommend, -all```
