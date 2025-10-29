@@ -1,5 +1,3 @@
-Project Repository for the ILESLA DTP 2025 Software Engineering course.
-
 # DPhil Project Recommender Tool 
 ## The Team:
 Thomas Shaw\
