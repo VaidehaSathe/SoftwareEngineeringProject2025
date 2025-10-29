@@ -113,3 +113,27 @@ python -m project_recommender.cli <subcommand> [options]
 
 This should be possible later.
 To run this command instead, go to the root and do `pip install -e .`
+
+## Turning project into installable
+
+your-repo/
+├─ pyproject.toml
+├─ README.md
+├─ LICENSE
+├─ MANIFEST.in
+├─ src/
+│  └─ project_recommender/
+│     ├─ __init__.py
+│     ├─ cli.py
+│     ├─ pdf_loader_plumber.py
+│     ├─ preprocessor.py
+│     ├─ recommender.py
+│     └─ ...
+└─ tests/
+
+* Modules should be using package imports
+```
+from project_recommender import preprocessor
+# or relative
+from . import preprocessor
+```
