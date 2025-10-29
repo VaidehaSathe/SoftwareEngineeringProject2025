@@ -49,6 +49,7 @@ This takes a CSV file in data/project_CSVs and tokenizes the description, writin
 [csv] is an optional field. It takes the name of the csv, left empty will read /projects_summary.csv
 
 **-recommend**
+
 Calls the recommend() function.
 
 ```recommend "query text here" --tokenized-csv --amount```
@@ -57,27 +58,48 @@ Calls the recommend() function.
 --amount is a necessary field. It is the nunmber of projects you want to select.
 
 **-all**
+
 Does all of above.
 
 ## Developer Usage
+
+```
+# General CLI command structure
+
 PYTHONPATH=src python -m project_recommender.cli <subcommand> [options]
+```
+
+```
 # Process all PDFs
 PYTHONPATH=src python -m project_recommender.cli process
+
 # Process single PDF and write to custom CSV
 PYTHONPATH=src python -m project_recommender.cli process somefile.pdf -o data/project_CSVs/my_out.csv
+```
+
+```
 # Tokenize default projects_summary.csv
 PYTHONPATH=src python -m project_recommender.cli tokenize
+
 # Tokenize a specific CSV path
 PYTHONPATH=src python -m project_recommender.cli tokenize path/to/my.csv
+```
+
+```
 # Default 10 results (tokenized CSV in repo)
 PYTHONPATH=src python -m project_recommender.cli recommend "I want biology projects"
+
 # Specify tokenized CSV and 5 results
 PYTHONPATH=src python -m project_recommender.cli recommend "I want biology projects" --tokenized-csv tokenized_projects_summary.csv --amount 5
+```
+
+```
 # Full pipeline for all PDFs, no recommend
 PYTHONPATH=src python -m project_recommender.cli all
+
 # Full pipeline for a specific PDF and then recommend 7 results
 PYTHONPATH=src python -m project_recommender.cli all mydoc.pdf -o data/project_CSVs/out.csv --query "epidemiology machine learning" --amount 7
-
+```
 ## User commands
 Strictly speaking, these commands should be invoked with 
 
