@@ -11,17 +11,20 @@ It is difficult to comprehensively search the large number of available rotation
 
 # Pipeline Units:
 ## PDF Loader
-Given a PDF file containing projects, outputs a csv file with columns ["title:","supervisors":,"description"]\
-Extraction logic with pdfplumber.
+* Given a PDF file containing projects, outputs a csv file with columns ["title:","supervisors":,"description"]
+* Extraction logic with `pdfplumber`.
 
 ## Preprocessor
-Takes the project description strings from the dataframe and tokenizes them using the NLTK Word Tokenizer.\
-Extracts POS tags for the tokens.\
-Removes inflectional endings of the tokens using the NLTK lemmatizer.\
-Removes common words (including articles and english stopwords).\
-Replaces any contractions with their original words.
+* Takes the project description strings from the dataframe and tokenizes them using the NLTK Word Tokenizer.
+* Extracts POS tags for the tokens.
+* Removes inflectional endings of the tokens using the NLTK lemmatizer.
+* Removes common words (including articles and english stopwords).
+* Replaces any contractions with their original words.
 
 ## Recommender
+* Takes three inputs: a long user query (>15 words), a tokenized CSV filename, and the number of desired projects (N).
+* Resolves the CSV path, vectorizes text with TF-IDF, and calculates cosine similarity between the query and project descriptions.
+* Returns a DataFrame of the top N projects with columns: title, primary_theme, supervisors, and score.
 
 ## CLI
 
