@@ -1,0 +1,1 @@
+Allows git to track the data folder structure without tracking the data.

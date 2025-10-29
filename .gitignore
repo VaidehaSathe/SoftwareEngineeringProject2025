@@ -1,7 +1,7 @@
 venv/
-data/project_CSVs/
-data/tokenized_CSVs/
-data/raw_PDFs/
+data/project_CSVs/*.csv
+data/tokenized_CSVs/*.csv
+data/raw_PDFs/*.pdf
 .pytest_cache/
 .vscode/
 src/project_recommender/__pycache__/
