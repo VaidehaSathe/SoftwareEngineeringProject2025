@@ -25,39 +25,38 @@ Replaces any contractions with their original words.
 
 ## CLI
 
-For these to work, you need to be in the root folder. That is, in /SoftwareEngineeringProject2025.
-Not in /src/, not in /project_recommender/.
-There are four commands: -process, -tokenize, recommend, -all 
+For these to work, you need to be in the root folder. That is, in /SoftwareEngineeringProject2025. Not in /src/, not in /project_recommender/.
 
-1. Process
+There are four commands: ```-process, -tokenize, recommend, -all```
+
+**-process**
+
 This takes PDFs in data/raw_PDFs/ and write CSV(s) into data/project_CSVs
 
-'''python
+```
 process -o [pdf] 
-'''
+```
+
 -o is an optional field. It outputs the CSV location.
 [pdf] is an optional field, it takes the name of the PDF file. Left empty, it will read all PDFs in raw_PDFs.
 
+**-tokenize**
 
-2. Tokenize
 This takes a CSV file in data/project_CSVs and tokenizes the description, writing another file in data/tonkeized_CSVs
 
-'''
-tokenize [csv]
+`tokenize [csv]`
 
 [csv] is an optional field. It takes the name of the csv, left empty will read /projects_summary.csv
-'''
 
-3. Recommend
+**-recommend**
 Calls the recommend() function.
 
-''' 
-recommend "query text here" --tokenized-csv --amount
+```recommend "query text here" --tokenized-csv --amount```
 
 --tokenized-csv is an optional field. It takes the filepath of the tokenized-csv.
 --amount is a necessary field. It is the nunmber of projects you want to select.
 
-4. All
+**-all**
 Does all of above.
 
 ## Developer Usage
