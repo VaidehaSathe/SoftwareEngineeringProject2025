@@ -1,7 +1,15 @@
+# Ignore virtual environment
+
 venv/
+
+# Ignore data
+# Don't look for csv files in project_CSVs and tokenized_CSVs
 data/project_CSVs/*.csv
 data/tokenized_CSVs/*.csv
+# Don't look for PDFs in raw_PDFs
 data/raw_PDFs/*.pdf
+
+# Other misc things to not track
 .pytest_cache/
 .vscode/
 src/project_recommender/__pycache__/
