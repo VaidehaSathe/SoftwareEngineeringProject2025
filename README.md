@@ -44,8 +44,7 @@ process -o [pdf]
 
 This takes a CSV file in data/project_CSVs and tokenizes the description, writing another file in data/tonkeized_CSVs
 
-```
-tokenize [csv]```
+`tokenize [csv]`
 
 [csv] is an optional field. It takes the name of the csv, left empty will read /projects_summary.csv
 
