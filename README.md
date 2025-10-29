@@ -27,7 +27,8 @@ It is difficult to comprehensively search the large number of available rotation
 * Returns a DataFrame of the top N projects with columns: title, primary_theme, supervisors, and score.
 
 ## CLI
-
+* Provides a command-line interface (CLI) to run the full pipeline: Process PDFs → Tokenize CSVs → Recommend projects.
+* Allows flexible use from the project root with options for specific files, queries, and output locations.
 
 For these to work, you need to be in the root folder. That is, in /SoftwareEngineeringProject2025. Not in /src/, not in /project_recommender/. The general command line structure is `python -m project_recommender.cli <command> <query>`. There are four commands: ```-process, -tokenize, recommend, -all```
 
