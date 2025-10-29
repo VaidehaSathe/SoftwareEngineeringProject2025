@@ -19,8 +19,6 @@
 # pip install -e .
 # python -m project_recommender.cli recommend "I want biology projects"
 
-
-
 # Test code at bottom. 
 
 from .preprocessor import query_preprocessor
