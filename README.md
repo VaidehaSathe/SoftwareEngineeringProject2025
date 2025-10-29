@@ -116,24 +116,64 @@ To run this command instead, go to the root and do `pip install -e .`
 
 ## Turning project into installable
 
-your-repo/
-├─ pyproject.toml
-├─ README.md
-├─ LICENSE
-├─ MANIFEST.in
-├─ src/
-│  └─ project_recommender/
-│     ├─ __init__.py
-│     ├─ cli.py
-│     ├─ pdf_loader_plumber.py
-│     ├─ preprocessor.py
-│     ├─ recommender.py
-│     └─ ...
-└─ tests/
+Needs MANIFEST.in and LICENSE in source (same level as data and so on).
 
 * Modules should be using package imports
 ```
 from project_recommender import preprocessor
 # or relative
 from . import preprocessor
+```
+
+* pyproject.toml needs to include:
+```
+# optional CLI command:
+[project.scripts]
+project-recommender = "project_recommender.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+```
+
+* Optional for MANIFEST.in: if the package includes data or docs
+```
+include README.md LICENSE
+recursive-include data *.csv *.pdf
+```
+
+* Create build tools
+```
+python -m pip install --upgrade build
+python -m build
+
+# This creates files in dist/project_recommender-0.0.1-py3-none-any.whl, such as dist/project_recommender-0.1.0.tar.gz
+```
+
+* Install
+```
+# Install from wheel
+python -m pip install dist/project_recommender-0.1.0-py3-none-any.whl
+
+# Install as editable
+pip install -e .
+```
+
+* Run package
+```
+# if [project.scripts] added
+project-recommender --help
+
+
+# else
+python -m project_recommender.cli --help
+
+# as a library
+from project_recommender import recommender
+recommender.recommend("virus models", "tokenized.csv", 5)
+```
+
+* For later, publish to PyPI
+```
+python -m pip install --upgrade twine
+python -m twine upload dist/*
 ```
