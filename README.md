@@ -146,13 +146,13 @@ recursive-include data *.csv *.pdf
 python -m pip install --upgrade build
 python -m build
 
-# This creates files in dist/project_recommender-0.0.1-py3-none-any.whl, such as dist/project_recommender-0.1.0.tar.gz
+# This creates files in dist/project_recommender-0.0.1-py3-none-any.whl, such as dist/project_recommender-0.0.1.tar.gz
 ```
 
 * Install
 ```
 # Install from wheel
-python -m pip install dist/project_recommender-0.1.0-py3-none-any.whl
+python -m pip install dist/project_recommender-0.0.1-py3-none-any.whl
 
 # Install as editable
 pip install -e .
