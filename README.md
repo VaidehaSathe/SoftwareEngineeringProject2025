@@ -103,9 +103,9 @@ PYTHONPATH=src python -m project_recommender.cli all mydoc.pdf -o data/project_C
 ## User commands
 Strictly speaking, these commands should be invoked with 
 
+```
 python -m project_recommender.cli <subcommand> [options]
+```
 
 This should be possible later.
-To run this command instead, go to the root and do:
-
-pip install -e .
+To run this command instead, go to the root and do `pip install -e .`
