@@ -6,6 +6,7 @@
 # query_preprocessor: Tokenizes input text string for recommender
 # NOTE: REQUIRES NLTK DATA TO BE DOWNLOADED. RUN setup_nltk.py IN config FOLDER TO DOWNLOAD.
 #--------------------------------------------------------#
+import pandas as pd
 import nltk 
 from nltk.stem import WordNetLemmatizer
 lemmatizer = WordNetLemmatizer()
@@ -57,7 +58,6 @@ def data_preprocessor(filename):
     Returns:
         None
     """
-    import pandas as pd
 
         # The input (original) file
     dataframe = pd.read_csv(f'data/project_CSVs/{filename}')
@@ -70,8 +70,6 @@ def data_preprocessor(filename):
 
     # Save to tokenized_CSVs directory
     dataframe.to_csv(f'data/tokenized_CSVs/{new_filename}', index=False)
-
-    # print(f"✅ Tokenized file saved as data/tokenized_CSVs/{new_filename}")
 
 def query_preprocessor(query):
     """

@@ -280,7 +280,8 @@ def process_all_pdfs_to_one_csv(output_path: Optional[Union[str, Path]] = None) 
     df = df[["title", "primary_theme", "supervisors", "description"]]
 
     # --- CLEAN: replace empty/missing/NaN/whitespace-only values with the string "empty" ---
-    df = df.applymap(clean_entry)
+    df = df.apply(lambda col: col.map(clean_entry))
+
 
     df.to_csv(output_path, index=False)
     logger.info("Wrote %d rows to: %s", len(df), output_path.resolve())
@@ -315,7 +316,7 @@ def process_pdf_to_csv(pdf_path: Union[str, Path], output_path: Optional[Union[s
     df = df[["title", "primary_theme", "supervisors", "description"]]
 
     # --- CLEAN: replace empty/missing/NaN/whitespace-only values with the string "empty" ---
-    df = df.applymap(clean_entry)
+    df = df.apply(lambda col: col.map(clean_entry))
 
     df.to_csv(output_path, index=False)
     logger.info("Wrote %d rows to: %s", len(df), output_path.resolve())
