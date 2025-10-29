@@ -59,8 +59,20 @@ def data_preprocessor(filename):
     """
     import pandas as pd
 
-        # The input (original) file
+    # The input (original) file
     dataframe = pd.read_csv(f'data/project_CSVs/{filename}')
+
+    # Remove any row that contains more than two "empty" entries, because it's likely that text is incorrect
+    # --- NEW FILTER: remove rows where "row" appears more than twice in the row text ---
+    def too_many_rows(row):
+        text = " ".join(map(str, row.values)).lower()
+        return text.count("row") > 2
+
+    before_count = len(dataframe)
+    dataframe = dataframe[~dataframe.apply(too_many_rows, axis=1)]
+    after_count = len(dataframe)
+
+    print(f"🧹 Removed {before_count - after_count} rows containing 'row' more than twice.")
 
     # Tokenize the description column
     dataframe['tokenized_description'] = dataframe['description'].apply(preprocess_text)
