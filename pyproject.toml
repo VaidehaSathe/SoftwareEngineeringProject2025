@@ -41,3 +41,9 @@ dependencies = [
 [project.urls]
 Homepage = "https://github.com/VaidehaSathe/SoftwareEngineeringProject2025"
 
+# Expose a console entry point so pip-install provides a `project-recommender` CLI
+[project.scripts]
+project-recommender = "project_recommender.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
