@@ -1,6 +1,7 @@
-# Ignore virtual environment
-
+# Ignore virtual environments
 venv/
+venv_SLS2/
+venv_SP12/
 
 # Ignore data
 # Don't look for csv files in project_CSVs and tokenized_CSVs
