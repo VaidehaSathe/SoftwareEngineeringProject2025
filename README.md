@@ -76,7 +76,7 @@ project-recommender process
 project-recommender process "Sample Project Booklet.pdf"
 
 # Specify explicit CSV output path
-project-recommender process -o data/csv_files/my_booklet.csv
+project-recommender process -o data/project_CSVs/my_booklet.csv
 ```
 
 * **tokenize**: tokenizes the description text in a CSV file
