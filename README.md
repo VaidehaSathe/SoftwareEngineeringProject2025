@@ -26,7 +26,7 @@ It is difficult to comprehensively search the large number of available rotation
 
 ### Recommender
 * Takes three inputs: a user query of at least 15 words, a file with tokenized descriptions, and the number of desired projects.
-* Resolves filepath, vectorizes text with TF-IDF, and calculates cosine similarity between the query and project descriptions.
+* Resolves filepath, vectorizes text with TF-IDF (Term Frequency-Inverse Document Frequency), and calculates cosine similarity between the query and project descriptions.
 * Returns N projects (by default, 10) based on a similarity score.
 
 ### CLI
