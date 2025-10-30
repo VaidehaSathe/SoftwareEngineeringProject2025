@@ -62,17 +62,20 @@ def data_preprocessor(filename):
     # The input (original) file
     dataframe = pd.read_csv(f'data/project_CSVs/{filename}')
 
-    # Remove any row that contains more than two "empty" entries, because it's likely that text is incorrect
-    # --- NEW FILTER: remove rows where "row" appears more than twice in the row text ---
     def too_many_rows(row):
         text = " ".join(map(str, row.values)).lower()
-        return text.count("row") > 2
+        # Remove row if "empty" appears more than twice
+        return text.count("empty") > 2
 
     before_count = len(dataframe)
+    # Drop rows where too_many_rows() is True
     dataframe = dataframe[~dataframe.apply(too_many_rows, axis=1)]
     after_count = len(dataframe)
 
-    print(f"🧹 Removed {before_count - after_count} rows containing 'row' more than twice.")
+    if before_count - after_count != 0:
+        print(f"🧹 Removed {before_count - after_count} rows containing 'empty' more than twice.")
+    else:
+        print("🧹 No need to remove any rows.")
 
     # Tokenize the description column
     dataframe['tokenized_description'] = dataframe['description'].apply(preprocess_text)
@@ -81,7 +84,8 @@ def data_preprocessor(filename):
     new_filename = f"tokenized_{filename}"
 
     # Save to tokenized_CSVs directory
-    dataframe.to_csv(f'data/tokenized_CSVs/{new_filename}', index=False)
+    dataframe.to_csv(f"data/tokenized_CSVs/{new_filename}", index=False)
+
 
 def query_preprocessor(query):
     """
