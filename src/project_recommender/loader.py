@@ -1,13 +1,19 @@
+# loader.py
 # Date 29/10/2025
-# DESCRIPTION: This module contains a function called move_pdf, which takes as an input
-# the filepath of the directory that you want to move PDFs from, then copies said PDFs
-# into a different directory, called data
-#
-# As an output, it returns the name of the directory that they were copied into (data),
-# a list of the PDFs that were copied, and the number of files that were copied.
+
+"""
+Description: Moves PDF files from a specified directory to a local folder called data/raw_PDFs.
+Input: Filepath of a folder containing any PDFs the user wants read
+Output: 
+- The folders /data/raw_PDFs, data/project_CSVs, and data/tokenized_CSVs in the repo root (where the script runs from)
+- Moves the PDFs from the local folder to /data/raw_PDFs
+
+I used os.path.abspath and os.path.dirname instead of explicitly calling '..' so it should be compatable with different OSes.
+"""
 
 from pathlib import Path
 import shutil
+import os
 
 def repo_root_guess() -> Path:
     try:
@@ -30,17 +36,26 @@ CSV_TOK_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 def move_pdf(filepath):
     """ Input the filepath that you want to move the PDF files from
     This function will move them to data/raw_PDFs. """
+    
+    filepath_resolved_folder = os.path.abspath(os.path.dirname(__file__))
+    # home/teaching/SoftwareEngineeringProject2025/src/project_recommender/loader.py
 
-    #Resolve the filepath
+    # resolve the filepath of the folder containing PDFs
     filepath_resolved = Path(filepath).resolve()
+    # print(filepath, filepath_resolved)
 
     #Find the PDFs
     pdfs = [file for file in filepath_resolved.rglob("*.pdf") if file.is_file()]
     if pdfs == []:
         return("There are no PDFs in this filepath")
+    # else: print("PDF found at:",filepath)
 
-    #Find the directory that is two directories 'up'
-    two_up = filepath_resolved.resolve().parents[2]
+    # Find the directory that is two directories 'up'. os.path.dirname finds the directory directly above its argument.
+    # Path() converts the string to a path.
+    # two_up = filepath_resolved_folder.resolve().parents[2]
+    two_up = Path(os.path.dirname(os.path.dirname(filepath_resolved_folder)))
+
+    # print(two_up)
 
     #Find the directory called 'data'
     data_directory = None
@@ -67,3 +82,6 @@ def move_pdf(filepath):
         copied.append(destination)
     
     return {"Copied into": raw_PDFs_directory, "Copied files": copied, "Number of files copied": len(copied)}
+
+# Test
+# move_pdf("zzz") 
