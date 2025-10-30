@@ -129,6 +129,22 @@ def cmd_process(args: argparse.Namespace) -> Path:
     logger.info("CSV written: %s", out)
     return Path(out)
 
+def cmd_load(args: argparse.Namespace):
+    """
+    Load PDFs from a local folder into the repo data/raw_PDFs directory.
+    Returns the loader.move_pdf() result (dict or message).
+    """
+    loader = _lazy_import_module("loader")  # imports project_recommender.loader
+    folder = args.folder
+    if not folder:
+        logger.error("No folder path provided for `load` command.")
+        raise ValueError("Folder path required")
+    logger.info("Loading PDFs from folder: %s", folder)
+    result = loader.move_pdf(folder)
+    # pretty-print result for CLI
+    print(result)
+    return result
+
 
 def cmd_tokenize(args: argparse.Namespace) -> Path:
     """
@@ -184,8 +200,6 @@ def cmd_recommend(args: argparse.Namespace) -> str:
     print(result)
     return result
 
-
-
 def cmd_all(args: argparse.Namespace) -> Path:
     """
     Run full pipeline: process -> tokenize -> (optional recommend).
@@ -215,6 +229,11 @@ def cmd_all(args: argparse.Namespace) -> Path:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="project-recommender", description="PDF -> CSV -> Tokenize -> Recommend CLI")
     sub = parser.add_subparsers(dest="cmd", required=True)
+
+    l = sub.add_parser("load", help="Copy PDFs from a local folder into data/raw_PDFs")
+    l.add_argument("folder", help="Path to a folder containing PDFs to copy into the pipeline (data/raw_PDFs).")
+    l.set_defaults(func=cmd_load)
+
 
     p = sub.add_parser("process", help="Process PDF(s) into CSV(s)")
     p.add_argument("pdf", nargs="?", default=None, help="Optional PDF filename in data/raw_PDFs to process. If omitted, all PDFs are processed.")
