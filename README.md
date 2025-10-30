@@ -35,7 +35,9 @@ python3 -m venv env # creates a virtual environment called env
 venv\Scripts\activate
 
 # On macOS and Linux
-source venv/bin/activate```
+source venv/bin/activate
+```
+
 ### Install with Pip (recommended)
 ```
 pip install project-recommender
