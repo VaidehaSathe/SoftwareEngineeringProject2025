@@ -52,7 +52,7 @@ source venv/bin/activate
 pip install project-recommender
 pip install requirements.txt
 ```
-### Install from source
+### Install from source (for advanced users)
 ```
 # Create build tools and build the .whl file
 # Needs to be in source folder
@@ -95,7 +95,7 @@ title3        supervisor3 department3 0.12
 ```
 
 ## Advanced Usage Guide
-In general, each command takes the form `project-recommender <command> [options]`. Each command `load` `process` `tokenize` `all` has several manual options.
+In general, each command takes the form `project-recommender <command> [options]`. Each command `load` `process` `tokenize` `all` has several options.
 
 * **load**: copies PDFs from system's working directory (/path/to/project_pdfs) to inside your venv.
 ```
