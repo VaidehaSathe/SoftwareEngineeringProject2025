@@ -1,7 +1,7 @@
+"""
 # loader.py
 # Date: 29/10/2025
-
-"""
+--------------------------------------------------------#
 Description: Moves PDF files from a specified directory to a local folder called data/raw_PDFs.
 Input: Filepath of a folder containing any PDFs the user wants read
 Output: 
@@ -11,6 +11,7 @@ in the repo root (where the script runs from)
 
 I used os.path.abspath and os.path.dirname instead of explicitly 
 calling '..' so it should be compatable with different OSes.
+--------------------------------------------------------#
 """
 
 from pathlib import Path

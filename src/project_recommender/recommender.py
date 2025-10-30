@@ -1,28 +1,30 @@
 """ 
 recommender.py
 Date 28/10/2025
-# DESCRIPTION: This function takes three inputs:
-# 1. a user query, which is a string > 15 words
-# 2. the name of a tokenized .csv file in the tokenized_CSVs folder
-# 3. the number of projects that the user wants, an integer: N
-#
-# It resolves the filepath of the csv file with pathlib.
-# It vectorizes with TF-IDF and finds cosine similarity between 
-# query and tokenized project descriptions.
-# It takes the top N projects by similarity, and creates a new dataframe object.
-# This has the keys (['title', 'primary_theme', 'supervisors', 'score']
-# It returns this new dataframe object.
+--------------------------------------------------------#
+DESCRIPTION: This function takes three inputs:
+1. a user query, which is a string > 15 words
+2. the name of a tokenized .csv file in the tokenized_CSVs folder
+3. the number of projects that the user wants, an integer: N
 
-# DO NOT RUN THIS FILE DIRECTLY. If you do, remove the dot from from .preprocessor
-# When running this file, go to /SoftwareEngineeringProject2025, then
-# PYTHONPATH=src python -m project_recommender.cli recommend "I want biology projects"
-# --tokenized-csv tokenized_projects_summary.csv
+It resolves the filepath of the csv file with pathlib.
+It vectorizes with TF-IDF and finds cosine similarity between 
+query and tokenized project descriptions.
+It takes the top N projects by similarity, and creates a new dataframe object.
+This has the keys (['title', 'primary_theme', 'supervisors', 'score']
+It returns this new dataframe object.
 
-# Alternatively, do
-# # from project root (/SoftwareEngineeringProject2025)
-# pip install -e .
-# python -m project_recommender.cli recommend "I want biology projects"
-# Test code at bottom.
+DO NOT RUN THIS FILE DIRECTLY. If you do, remove the dot from from .preprocessor
+When running this file, go to /SoftwareEngineeringProject2025, then
+PYTHONPATH=src python -m project_recommender.cli recommend "I want biology projects"
+--tokenized-csv tokenized_projects_summary.csv
+
+Alternatively, do
+# from project root (/SoftwareEngineeringProject2025)
+pip install -e .
+python -m project_recommender.cli recommend "I want biology projects"
+Test code at bottom.
+--------------------------------------------------------#
 """
 from pathlib import Path
 

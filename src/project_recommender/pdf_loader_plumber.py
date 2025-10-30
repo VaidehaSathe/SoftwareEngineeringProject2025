@@ -1,7 +1,7 @@
-# pdf_loader_plumber.py
-# Date: 28/10/2025
-
 """
+pdf_loader_plumber.py
+Date: 28/10/2025
+--------------------------------------------------------#
 Description: Reads PDF files and parses into raw text
 Input: All (or single) PDFs inside data/raw_PDFs/
 Output: project_summary.csv to data/project_CSVs/ 
@@ -16,6 +16,7 @@ Usage:
 
   # Specify explicit output file
   python src/project_recommender/pdf_loader_plumber.py -o data/project_CSVs/my_projects.csv
+--------------------------------------------------------#
 """
 from pathlib import Path
 import re

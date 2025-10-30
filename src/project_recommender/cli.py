@@ -1,10 +1,10 @@
-# cli.py
-# Date: 29/10/2025
-
 """
+cli.py
+Date: 29/10/2025
+--------------------------------------------------------#
 Description: CLI interface that connects the analysis pipeline
 
-Usage examples (from repo root):
+Usage examples (run from repo root):
 
 # Process all PDFs in data/raw_PDFs and write combined CSV:
 python -m project_recommender.cli process
@@ -20,6 +20,7 @@ python -m project_recommender.cli recommend "I want epidemiology projects"
 
 # Run full pipeline (process -> tokenize -> recommend)
 python -m project_recommender.cli all --query "machine learning for biology"
+--------------------------------------------------------#
 """
 
 from __future__ import annotations
