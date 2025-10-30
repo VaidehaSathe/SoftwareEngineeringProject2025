@@ -16,3 +16,4 @@ data/raw_PDFs/*.pdf
 src/project_recommender/__pycache__/
 tests/__pycache__/
 *.py[cod]
+requirements_ARM64.txt
