@@ -46,16 +46,24 @@ project-recommender load your-path-goes-here
 project-recommender all "Your query goes here"
 ```
 
+## Example Usage
+```
+project-recommender load /home/project-folder/
+project-recommender all "I want to learn about machine learning methods for collective cell movement. I would like to work with industry, and I want to use mathematical modelling in my research."
+```
+
 ## Advanced Usage Guide
 Each command `load` `process` `tokenize` `all` have several options that you can select.
 
 
 ```
 # process
+
 """
 You can select which file to read
 -o gives the option to modify the filepath of the output csv. 
 """
+
 project-recommender process somefile.pdf -o data/project_CSVs/my_out.csv
 ```
 * tokenie
