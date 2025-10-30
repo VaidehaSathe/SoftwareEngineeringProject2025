@@ -60,25 +60,44 @@ title3        supervisor3 department3 0.12
 ```
 
 ## Advanced Usage Guide
-Each command `load` `process` `tokenize` `all` have several options that you can select.
+In general, each command takes the form `project-recommender <command> [options]`. Each command `load` `process` `tokenize` `all` has several manual options.
 
-
+* load: copies PDFs from system's working directory (/path/to/project_pdfs) to inside your venv.
 ```
-# process
-
-"""
-You can select which file to read
--o gives the option to modify the filepath of the output csv. 
-"""
-
-project-recommender process somefile.pdf -o data/project_CSVs/my_out.csv
+project-recommender load /path/to/project_pdfs
 ```
-* tokenie
+
+* process: extracts project data from one or more PDFs
 ```
+# default (process all PDFs at once)
+project-recommender process
+
+# Process a specific PDF
+project-recommender process "Sample Project Booklet.pdf"
+
+# Specify explicit CSV output path
+project-recommender process -o data/csv_files/my_booklet.csv
+```
+
+* tokenize: tokenizes the description text in a CSV file
+```
+# default (proceses project_summary.csv)
 project-recommender tokenize
+
+# Specify particular text CSV
+project-recommender tokenize data/project_CSVs/my_booklet.csv
 ```
-* Get recommendations
+
+* recommend: give top-N recommendations for a given text query
 ```
+# default (N=10 recommendations)
 project-recommender recommend "your-prompt-goes-here"
+
+# Change number of results
+project-recommender recommend "your-prompt-goes-here" -n 5
+
+# Specify particular tokenized CSV
+project-recommender recommend "your-prompt-goes-here" --tokenized-csv data/tokenized_CSVs/tokenized_my_booklet.csv
+
 ```
 ```
