@@ -114,7 +114,8 @@ python -m project_recommender.cli <subcommand> [options]
 This should be possible later.
 To run this command instead, go to the root and do `pip install -e .`
 
-## Turning project into installable
+## User Guide: Pip install
+## User Guide: Build from source
 
 Needs MANIFEST.in and LICENSE in source (same level as data and so on).
 
@@ -176,4 +177,14 @@ recommender.recommend("virus models", "tokenized.csv", 5)
 ```
 python -m pip install --upgrade twine
 python -m twine upload dist/*
+```
+
+## User commands
+
+* Once you have done `pip install project-recommender`, run these following commands in your virtual environment
+  
+```
+project-recommender process
+project-recommender tokenize
+project-recommender recommend "your-prompt-goes-here"
 ```
