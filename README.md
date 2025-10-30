@@ -9,12 +9,12 @@ It is difficult to comprehensively search the large number of available rotation
 
 # Pipeline Units:
 ## PDF Loader
-* Given a PDF file containing projects, outputs a csv file with columns ["title:","supervisors":,"description"]
-* Extraction logic with `pdfplumber`.
+* Copies PDFs from a user-specified directory into the virtual environment.
+* Parses project data from a PDF using `pdfplumber` and outputs it as a CSV file.
 
 ## Preprocessor
 * Takes the project description strings from the dataframe and tokenizes them using the NLTK Word Tokenizer.
-* Extracts POS tags for the tokens.
+* Extracts POS (part-of-speech) tags for the tokens.
 * Removes inflectional endings of the tokens using the NLTK lemmatizer.
 * Removes common words (including articles and english stopwords).
 * Replaces any contractions with their original words.
@@ -25,11 +25,10 @@ It is difficult to comprehensively search the large number of available rotation
 * Returns a DataFrame of the top N projects with columns: title, primary_theme, supervisors, and score.
 
 ## CLI
-* Provides a command-line interface (CLI) to run the full pipeline: Process PDFs → Tokenize CSVs → Recommend projects.
+* Provides a command-line interface (CLI) to run the full pipeline: Load PDFs → Process PDFs → Tokenize CSVs → Recommend projects.
 * Allows flexible use from the project root with options for specific files, queries, and output locations.
 
 For these to work, you need to be in the root folder in /SoftwareEngineeringProject2025/, not in /project_recommender/. The general command line structure is `python -m project_recommender.cli -<command> <query>`, and you need to specify the path based on where you're running the script from. If in /SoftwareEngineeringProject2025/, it should be `PYTHONPATH=src python -m project_recommender.cli <command> <query>`. If in /src/, it should be `PYTHONPATH=src python -m project_recommender.cli -<command> <query>`. The former is more reliable for now.
-
 
 There are four commands: ```-process, -tokenize, recommend, -all```
 
