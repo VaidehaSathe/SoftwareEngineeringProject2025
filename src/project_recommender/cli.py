@@ -1,6 +1,8 @@
-#!/usr/bin/env python3
+# cli.py
+# Date: 29/10/2025
+
 """
-Lightweight CLI to run PDF -> CSV -> Tokenize -> Recommend pipeline.
+Description: CLI interface that connects the analysis pipeline
 
 Usage examples (from repo root):
 
@@ -21,7 +23,6 @@ python -m project_recommender.cli all --query "machine learning for biology"
 """
 
 from __future__ import annotations
-
 import argparse
 import importlib
 import logging
@@ -36,14 +37,16 @@ logger = logging.getLogger(__name__)
 
 def _import_sibling_module(module_basename: str):
     """
-    Import a sibling module from the same package instance that contains this cli module.
+    Import a sibling module from the same package instance 
+    that contains this cli module.
 
     Strategy:
-      1) Try a relative import: import .<module_basename> with package=__package__.
-         This ensures we import modules from the same package object (avoids two-copy problem).
-      2) If that fails, print the traceback so the user sees the real error.
-      3) Fall back to attempting an absolute import 'project_recommender.<module_basename>'.
-         If still missing, add src/ (repo layout) to sys.path and retry, then raise helpful diagnostics.
+    1) Try a relative import: 
+    2) If that fails, print the traceback error
+    3) Fall back to attempting an absolute import:
+        'project_recommender.<module_basename>'
+    If still missing, add src/ (repo layout) to sys.path and retry,
+    then raise helpful diagnostics.
     """
     full_name = f"{__package__}.{module_basename}" if __package__ else f"project_recommender.{module_basename}"
 
