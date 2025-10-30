@@ -62,12 +62,12 @@ title3        supervisor3 department3 0.12
 ## Advanced Usage Guide
 In general, each command takes the form `project-recommender <command> [options]`. Each command `load` `process` `tokenize` `all` has several manual options.
 
-* load: copies PDFs from system's working directory (/path/to/project_pdfs) to inside your venv.
+* **load**: copies PDFs from system's working directory (/path/to/project_pdfs) to inside your venv.
 ```
 project-recommender load /path/to/project_pdfs
 ```
 
-* process: extracts project data from one or more PDFs
+* **process**: extracts project data from one or more PDFs
 ```
 # default (process all PDFs at once)
 project-recommender process
@@ -79,7 +79,7 @@ project-recommender process "Sample Project Booklet.pdf"
 project-recommender process -o data/csv_files/my_booklet.csv
 ```
 
-* tokenize: tokenizes the description text in a CSV file
+* **tokenize**: tokenizes the description text in a CSV file
 ```
 # default (proceses project_summary.csv)
 project-recommender tokenize
@@ -88,7 +88,7 @@ project-recommender tokenize
 project-recommender tokenize data/project_CSVs/my_booklet.csv
 ```
 
-* recommend: give top-N recommendations for a given text query
+* **recommend**: give top-N recommendations for a given text query
 ```
 # default (N=10 recommendations)
 project-recommender recommend "your-prompt-goes-here"
