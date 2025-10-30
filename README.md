@@ -31,7 +31,7 @@ mend() function.
 # Install with Pip (recommended)
 # Install from source
 
-## Usage Guide
+## Simple Usage Guide
 * Bring up the help menu with 
 ```
 project-recommender -h
@@ -41,15 +41,29 @@ project-recommender -help
 ```
 project-recommender load your-path-goes-here
 ```
-* Process PDFs
+* Generate recommendations based on your query
 ```
-project-recommender process
+project-recommender all "Your query goes here"
 ```
-* Tokenize descriptions
+
+## Advanced Usage Guide
+Each command `load` `process` `tokenize` `all` have several options that you can select.
+
+
+```
+# process
+"""
+You can select which file to read
+-o gives the option to modify the filepath of the output csv. 
+"""
+project-recommender process somefile.pdf -o data/project_CSVs/my_out.csv
+```
+* tokenie
 ```
 project-recommender tokenize
 ```
 * Get recommendations
 ```
 project-recommender recommend "your-prompt-goes-here"
+```
 ```
