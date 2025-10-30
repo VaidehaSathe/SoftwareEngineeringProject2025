@@ -1,4 +1,65 @@
-name: CI — pytest (Ubuntu, Python 3.11-3.14)
+# name: CI — pytest (Ubuntu, Python 3.11-3.14)
+
+# on:
+#   push:
+#     branches: ["**"]
+#   pull_request:
+#     branches: ["**"]
+#   workflow_dispatch: {}
+
+# jobs:
+#   test:
+#     runs-on: ubuntu-latest
+#     strategy:
+#       matrix:
+#         python-version: [3.11, 3.12, 3.13, 3.14]
+
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
+
+#       - name: Set up Python ${{ matrix.python-version }}
+#         uses: actions/setup-python@v4
+#         with:
+#           python-version: ${{ matrix.python-version }}
+
+#       - name: Install dependencies
+#         run: |
+#           python -m pip install --upgrade pip setuptools wheel
+#           if [ -f requirements.txt ]; then
+#             pip install -r requirements.txt
+#           else
+#             pip install pytest pandas nltk
+#           fi
+#         shell: bash
+
+#       - name: Prepare NLTK data
+#         run: |
+#           python - <<'PY'
+#           import nltk, os
+#           d = os.path.join(os.environ.get("RUNNER_TEMP", "/tmp"), "nltk_data")
+#           os.makedirs(d, exist_ok=True)
+#           nltk.download(['punkt','averaged_perceptron_tagger','wordnet','stopwords'], download_dir=d)
+#           print("NLTK data installed to:", d)
+#           PY
+#           echo "NLTK_DATA=${RUNNER_TEMP}/nltk_data" >> $GITHUB_ENV
+#         shell: bash
+
+#       - name: Show environment info
+#         run: |
+#           python -V
+#           pip --version
+#           pip list --format=columns
+#         shell: bash
+
+#       - name: Run tests
+#         env:
+#           NLTK_DATA: {{ runner.temp }}/nltk_data
+#         run: |
+#           pytest -q
+#         shell: bash
+
+name: CI — pytest (Ubuntu & Windows, Python 3.11-3.14)
 
 on:
   push:
@@ -9,9 +70,10 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        os: [ubuntu-latest, windows-latest]
         python-version: [3.11, 3.12, 3.13, 3.14]
 
     steps:
@@ -23,7 +85,12 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install dependencies
+      # -----------------------------
+      # Install dependencies (Linux)
+      # -----------------------------
+      - name: Install dependencies (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        shell: bash
         run: |
           python -m pip install --upgrade pip setuptools wheel
           if [ -f requirements.txt ]; then
@@ -31,9 +98,27 @@ jobs:
           else
             pip install pytest pandas nltk
           fi
-        shell: bash
 
-      - name: Prepare NLTK data
+      # -----------------------------
+      # Install dependencies (Windows)
+      # -----------------------------
+      - name: Install dependencies (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          if (Test-Path -Path "requirements.txt") {
+            pip install -r requirements.txt
+          } else {
+            pip install pytest pandas nltk
+          }
+
+      # -----------------------------
+      # Prepare NLTK data (Linux)
+      # -----------------------------
+      - name: Prepare NLTK data (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        shell: bash
         run: |
           python - <<'PY'
           import nltk, os
@@ -43,18 +128,64 @@ jobs:
           print("NLTK data installed to:", d)
           PY
           echo "NLTK_DATA=${RUNNER_TEMP}/nltk_data" >> $GITHUB_ENV
-        shell: bash
 
-      - name: Show environment info
+      # -----------------------------
+      # Prepare NLTK data (Windows)
+      # -----------------------------
+      - name: Prepare NLTK data (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          python - <<'PY'
+          import nltk, os
+          d = os.path.join(os.environ.get("RUNNER_TEMP"), "nltk_data")
+          os.makedirs(d, exist_ok=True)
+          nltk.download(['punkt','averaged_perceptron_tagger','wordnet','stopwords'], download_dir=d)
+          print("NLTK data installed to:", d)
+          PY
+          $nltd = Join-Path $env:RUNNER_TEMP 'nltk_data'
+          Add-Content -Path $env:GITHUB_ENV -Value "NLTK_DATA=$nltd"
+
+      # -----------------------------
+      # Show environment info (Linux)
+      # -----------------------------
+      - name: Show environment info (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        shell: bash
         run: |
           python -V
           pip --version
           pip list --format=columns
-        shell: bash
 
-      - name: Run tests
+      # -----------------------------
+      # Show environment info (Windows)
+      # -----------------------------
+      - name: Show environment info (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          python -V
+          pip --version
+          pip list --format=columns
+
+      # -----------------------------
+      # Run tests (Linux)
+      # -----------------------------
+      - name: Run tests (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        shell: bash
         env:
           NLTK_DATA: ${{ runner.temp }}/nltk_data
         run: |
           pytest -q
-        shell: bash
+
+      # -----------------------------
+      # Run tests (Windows)
+      # -----------------------------
+      - name: Run tests (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        env:
+          NLTK_DATA: ${{ runner.temp }}\nltk_data
+        run: |
+          pytest -q
