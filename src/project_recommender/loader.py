@@ -9,6 +9,24 @@
 from pathlib import Path
 import shutil
 
+def repo_root_guess() -> Path:
+    try:
+        return Path(__file__).resolve().parents[2]
+    except Exception:
+        return Path.cwd()
+
+REPO_ROOT = repo_root_guess()
+
+# primary data dirs used by the pipeline
+RAW_PDF_DIR = (REPO_ROOT / "data" / "raw_PDFs").resolve()
+CSV_OUTPUT_DIR = (REPO_ROOT / "data" / "project_CSVs").resolve()
+CSV_TOK_OUTPUT_DIR = (REPO_ROOT / "data" / "tokenized_CSVs").resolve()
+
+# ensure directories exist (idempotent)
+RAW_PDF_DIR.mkdir(parents=True, exist_ok=True)
+CSV_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+CSV_TOK_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
 def move_pdf(filepath):
     """ Input the filepath that you want to move the PDF files from
     This function will move them to data/raw_PDFs. """
