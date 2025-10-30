@@ -89,7 +89,6 @@ def _push_cwd(p: Path):
     finally:
         os.chdir(prev)
 
-
 def ensure_in_project_csvs(candidate: Path, pdf_loader):
     """
     Ensure `candidate` CSV is present in pdf_loader.CSV_OUTPUT_DIR.
