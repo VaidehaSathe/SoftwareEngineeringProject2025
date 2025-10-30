@@ -23,7 +23,7 @@ from typing import List, Dict, Optional, Union
 import pdfplumber
 import pandas as pd
 import logging
-from src.project_recommender.loader import (
+from .loader import ( #from src.project_recommender.loader import (
     REPO_ROOT,
     RAW_PDF_DIR,
     CSV_OUTPUT_DIR,
