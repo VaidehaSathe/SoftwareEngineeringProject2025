@@ -99,6 +99,11 @@ def recommend(user_input,tokenized_data_csv,amount_wanted):
         columns=['title', 'primary_theme', 'supervisors', 'score']
     )
 
+        # --- ensure full DataFrame prints to CLI ---
+    pd.set_option('display.max_columns', None)     # show all columns
+    # pd.set_option('display.width', None)           # don't wrap lines
+    # pd.set_option('display.max_colwidth', None)    # don't truncate long text
+
     return final_projects
 
 # Clever pathhandling magic
