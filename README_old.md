@@ -163,7 +163,6 @@ pip install -e .
 # if [project.scripts] added
 project-recommender --help
 
-
 # else
 python -m project_recommender.cli --help
 
