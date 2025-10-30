@@ -10,26 +10,50 @@ It is difficult to comprehensively search the large number of available rotation
 ## Modules:
 ### PDF Loader
 * Copies PDFs from a user-specified directory into the virtual environment.
-* Parses project data from a PDF using `pdfplumber`.
+* Parses project data from tabularized PDF using `pdfplumber`.
 
 ### Preprocessor
-* Tokenizes project descriptions from the dataframe and extracts POS tags using NLTK
+* Tokenizes project descriptions from the dataframe and extracts POS tags using NLTK.
 * Lemmatizes tokens, removes stopwords and common words, and expands contractions.
 
 ### Recommender
-* Takes three inputs: a long user query (>15 words), a file with tokenized descriptions, and the number of desired projects (N).
+* Takes three inputs: a user query of at least 15 words, a file with tokenized descriptions, and the number of desired projects.
 * Resolves filepath, vectorizes text with TF-IDF, and calculates cosine similarity between the query and project descriptions.
-* Returns N projects based on a similarity score.
+* Returns N projects (by default, 10) based on a similarity score.
 
 ### CLI
 * Provides a command-line interface (CLI) to run the full pipeline: Load PDFs → Process PDFs → Tokenize CSVs → Recommend projects.
 * Allows flexible use from the project root with options for specific files, queries, and output locations.
-mend() function.
 
 ## Installation Guide
+Follow these steps exactly for the program to work.
 ### Create a virtual environment
+```
+python3 -m venv env # creates a virtual environment called env
+
+# On Windows
+venv\Scripts\activate
+
+# On macOS and Linux
+source venv/bin/activate
+```
+
 ### Install with Pip (recommended)
+```
+pip install project-recommender
+pip install requirements.txt
+```
 ### Install from source
+```
+# Create build tools and build the .whl file
+python -m pip install --upgrade build
+python -m build
+
+# This creates files in dist/project_recommender-0.0.1-py3-none-any.whl, such as dist/project_recommender-0.0.1.tar.gz
+
+# Install from wheel
+python -m pip install dist/project_recommender-0.0.1-py3-none-any.whl
+```
 
 ## Simple Usage Guide
 * Bring up the help menu with 
@@ -60,25 +84,41 @@ title3        supervisor3 department3 0.12
 ```
 
 ## Advanced Usage Guide
-Each command `load` `process` `tokenize` `all` have several options that you can select.
+In general, each command takes the form `project-recommender <command> [options]`. Each command `load` `process` `tokenize` `all` has several manual options.
 
-
+* **load**: copies PDFs from system's working directory (/path/to/project_pdfs) to inside your venv.
 ```
-# process
-
-"""
-You can select which file to read
--o gives the option to modify the filepath of the output csv. 
-"""
-
-project-recommender process somefile.pdf -o data/project_CSVs/my_out.csv
+project-recommender load /path/to/project_pdfs
 ```
-* tokenie
+
+* **process**: extracts project data from one or more PDFs
 ```
+# default (process all PDFs at once)
+project-recommender process
+
+# Process a specific PDF
+project-recommender process "Sample Project Booklet.pdf"
+
+# Specify explicit CSV output path
+project-recommender process -o data/project_CSVs/my_booklet.csv
+```
+
+* **tokenize**: tokenizes the description text in a CSV file
+```
+# default (proceses project_summary.csv)
 project-recommender tokenize
+
+# Specify particular text CSV
+project-recommender tokenize data/project_CSVs/my_booklet.csv
 ```
-* Get recommendations
+
+* **recommend**: give top-N recommendations for a given text query
 ```
+# default (N=10 recommendations)
 project-recommender recommend "your-prompt-goes-here"
-```
-```
+
+# Change number of results
+project-recommender recommend "your-prompt-goes-here" -n 5
+
+# Specify particular tokenized CSV
+project-recommender recommend "your-prompt-goes-here" --tokenized-csv data/tokenized_CSVs/tokenized_my_booklet.csv
