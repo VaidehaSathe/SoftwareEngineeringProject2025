@@ -98,6 +98,3 @@ project-recommender recommend "your-prompt-goes-here" -n 5
 
 # Specify particular tokenized CSV
 project-recommender recommend "your-prompt-goes-here" --tokenized-csv data/tokenized_CSVs/tokenized_my_booklet.csv
-
-```
-```
