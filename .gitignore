@@ -9,6 +9,8 @@ data/project_CSVs/*.csv
 data/tokenized_CSVs/*.csv
 # Don't look for PDFs in raw_PDFs
 data/raw_PDFs/*.pdf
+# Don't look for weird .txt files
+src/project_recommender/*.txt
 
 # Other misc things to not track
 .pytest_cache/
