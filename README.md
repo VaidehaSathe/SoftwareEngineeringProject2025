@@ -37,7 +37,8 @@ It is difficult to comprehensively search the large number of available rotation
 Follow these steps exactly for the program to work.
 ### Create a virtual environment
 ```
-python3 -m venv env # creates a virtual environment called env
+# Create a virtual environment called venv
+python3 -m venv venv 
 
 # On Windows
 venv\Scripts\activate
