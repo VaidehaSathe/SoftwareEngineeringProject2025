@@ -2,6 +2,8 @@
 
 import pytest
 import pandas as pd
+import shutil
+from reportlab.pdfgen import canvas
 
 # Import the functions to test
 from src.project_recommender.pdf_loader_plumber import (
@@ -12,17 +14,47 @@ from src.project_recommender.pdf_loader_plumber import (
 
 from src.project_recommender.loader import ( RAW_PDF_DIR, CSV_OUTPUT_DIR )
 
+# @pytest.fixture(scope="module")
+# def sample_pdf(tmp_path_factory):
+#     """
+#     Fixture to provide a small, known PDF for tests.
+#     For simplicity, this assumes at least one .pdf exists in data/raw_PDFs.
+#     If not, you can manually copy a test PDF there.
+#     """
+#     pdfs = list(RAW_PDF_DIR.glob("*.pdf"))
+#     if not pdfs:
+#         pytest.skip("No sample PDFs found in data/raw_PDFs/")
+#     return pdfs[0]
+
 @pytest.fixture(scope="module")
 def sample_pdf(tmp_path_factory):
     """
-    Fixture to provide a small, known PDF for tests.
-    For simplicity, this assumes at least one .pdf exists in data/raw_PDFs.
-    If not, you can manually copy a test PDF there.
+    Fixture to ensure at least one sample PDF exists in RAW_PDF_DIR.
+    If none exists, this will generate a small test PDF using reportlab
+    and copy it into RAW_PDF_DIR for the tests to use.
     """
+    RAW_PDF_DIR.mkdir(parents=True, exist_ok=True)
     pdfs = list(RAW_PDF_DIR.glob("*.pdf"))
-    if not pdfs:
-        pytest.skip("No sample PDFs found in data/raw_PDFs/")
-    return pdfs[0]
+
+    if pdfs:
+        # Return the first existing PDF
+        return pdfs[0]
+
+    # Create a temporary PDF file
+    tmp_dir = tmp_path_factory.mktemp("pdf_fixture")
+    pdf_path = tmp_dir / "sample.pdf"
+
+    # Generate a minimal, valid PDF
+    c = canvas.Canvas(str(pdf_path))
+    c.drawString(100, 750, "This is a sample test PDF for CI testing.")
+    c.showPage()
+    c.save()
+
+    # Copy the PDF into RAW_PDF_DIR so all functions can find it
+    dest_path = RAW_PDF_DIR / pdf_path.name
+    shutil.copy2(pdf_path, dest_path)
+
+    return dest_path
 
 
 def test_parse_pdf_returns_list(sample_pdf):
