@@ -1,11 +1,16 @@
-# Date: 27/10/2025 
-#--------------------------------------------------------#
-# Description: This module contains functions to preprocess text data to feed into the recommender module.
-# Functionality: Original Text -> Tokenized Text
-# data_preprocessor: Tokenizes all description elements from Extracted Data CSV
-# query_preprocessor: Tokenizes input text string for recommender
-# NOTE: REQUIRES NLTK DATA TO BE DOWNLOADED. RUN setup_nltk.py IN config FOLDER TO DOWNLOAD.
-#--------------------------------------------------------#
+"""
+preprocessor.py
+Date: 27/10/2025
+
+Description: This module contains functions to preprocess text data to feed into the recommender module.
+- data_preprocessor: Tokenizes all description elements from Extracted Data CSV
+- query_preprocessor: Tokenizes input text string for recommender
+
+Inputs: Origanal Text
+
+Outputs: Tokenized Text
+"""
+
 import pandas as pd
 import nltk 
 
