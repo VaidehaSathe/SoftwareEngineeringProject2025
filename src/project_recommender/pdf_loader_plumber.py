@@ -23,7 +23,7 @@ from typing import List, Dict, Optional, Union
 import pdfplumber
 import pandas as pd
 import logging
-from .loader import ( #from src.project_recommender.loader import (
+from .loader import (  # from src.project_recommender.loader import (
     REPO_ROOT,
     RAW_PDF_DIR,
     CSV_OUTPUT_DIR,
@@ -35,11 +35,17 @@ logger = logging.getLogger(__name__)
 
 # --- labels / config ---
 LABEL_TITLE = "project no & title"
+# keep old single-string constant for backward clarity, but we'll use SUPERVISOR_LABELS below
 LABEL_SUPERVISORS = "supervisors"
 LABEL_DESCRIPTION = "project description"
 LABEL_PRIMARY_THEME = "primary theme"
+
+# Accept multiple variants for the supervisors label (case-insensitive match)
+SUPERVISOR_LABELS = {"supervisors", "supervisor(s)", "supervisor"}
+
 # additional label tokens that indicate boundaries when accumulating multi-row fields
-BOUNDARY_LABELS = {LABEL_SUPERVISORS, LABEL_DESCRIPTION, LABEL_PRIMARY_THEME, "remit"}
+# include all supervisor label variants so they are recognised as boundaries
+BOUNDARY_LABELS = set(SUPERVISOR_LABELS) | {LABEL_DESCRIPTION, LABEL_PRIMARY_THEME, "remit"}
 STOP_DESCRIPTION_LABELS = {"reasonable expected outcome", "reasonab"}
 
 # defaults
@@ -53,6 +59,7 @@ logger.debug("RAW_PDF_DIR: %s", RAW_PDF_DIR)
 logger.debug("CSV_OUTPUT_DIR: %s", CSV_OUTPUT_DIR)
 logger.debug("CSV_TOK_OUTPUT_DIR: %s", CSV_TOK_OUTPUT_DIR)
 
+
 # --- helpers ---
 def normalize(s: Optional[str]) -> str:
     """Normalise whitespace and convert None to empty string (further cleaning done later)."""
@@ -60,12 +67,14 @@ def normalize(s: Optional[str]) -> str:
         return ""
     return re.sub(r"\s+", " ", str(s)).strip()
 
+
 def clean_entry(value):
     """
     Convert None/NaN/whitespace-only values to the literal string "empty",
     otherwise strip and return the string value.
     """
     import pandas as _pd
+
     if value is None:
         return "empty"
     # pandas NaN are floats
@@ -74,10 +83,51 @@ def clean_entry(value):
     s = str(value).strip()
     return s if s else "empty"
 
-def is_label_cell(text: Optional[str], target: str) -> bool:
+
+def is_label_cell(text: Optional[str], target: Union[str, List[str], set]) -> bool:
+    """
+    Return True if the provided text contains the target label.
+
+    Matching strategy:
+      - Normalize the cell text: lowercase, replace punctuation with spaces, collapse whitespace.
+      - Normalize each target similarly.
+      - Then check if any normalized target appears as a substring (and also allow word-boundary match).
+    This handles 'Supervisors', 'Supervisor(s)', 'Supervisor (s):', etc.
+    """
     if not text:
         return False
-    return target in normalize(text).lower()
+
+    # normalize function: lowercase, drop punctuation to spaces, collapse whitespace
+    def _norm(t: str) -> str:
+        low = normalize(t).lower()
+        # replace any non-word (not letter/number/underscore) with a space
+        cleaned = re.sub(r"[^\w\s]", " ", low)
+        cleaned = re.sub(r"\s+", " ", cleaned).strip()
+        return cleaned
+
+    cell_norm = _norm(text)
+
+    # single string target
+    if isinstance(target, (str,)):
+        targ_norm = _norm(target)
+        if not targ_norm:
+            return False
+        # match either substring or whole word
+        if targ_norm in cell_norm:
+            return True
+        # word-boundary fallback
+        return bool(re.search(rf"\b{re.escape(targ_norm)}\b", cell_norm))
+
+    # iterable of candidates
+    for t in target:
+        targ_norm = _norm(str(t))
+        if not targ_norm:
+            continue
+        if targ_norm in cell_norm or re.search(rf"\b{re.escape(targ_norm)}\b", cell_norm):
+            return True
+
+    return False
+
 
 def looks_like_boundary(next_cells: List[str]) -> bool:
     """Return True if any of the next_cells contains a known boundary label."""
@@ -88,6 +138,7 @@ def looks_like_boundary(next_cells: List[str]) -> bool:
         if any(lbl in low for lbl in BOUNDARY_LABELS):
             return True
     return False
+
 
 # --- extraction (kept as your logic) ---
 def extract_projects_from_table(table_rows: List[List[Optional[str]]]) -> List[Dict[str, str]]:
@@ -140,7 +191,7 @@ def extract_projects_from_table(table_rows: List[List[Optional[str]]]) -> List[D
                 cur["primary_theme"] = " ".join(parts).strip()
 
         # SUPERVISORS
-        elif is_label_cell(first_cell, LABEL_SUPERVISORS):
+        elif is_label_cell(first_cell, SUPERVISOR_LABELS):
             rest = " ".join(cells[first_non_empty_idx + 1 :]).strip()
             if rest:
                 cur["supervisors"] = rest
@@ -149,7 +200,13 @@ def extract_projects_from_table(table_rows: List[List[Optional[str]]]) -> List[D
                 parts = []
                 while j < len(table_rows):
                     next_cells = [normalize(x) for x in table_rows[j]]
-                    if any(is_label_cell(c, LABEL_DESCRIPTION) or is_label_cell(c, LABEL_TITLE) or is_label_cell(c, LABEL_PRIMARY_THEME) for c in next_cells if c):
+                    if any(
+                        is_label_cell(c, LABEL_DESCRIPTION)
+                        or is_label_cell(c, LABEL_TITLE)
+                        or is_label_cell(c, LABEL_PRIMARY_THEME)
+                        for c in next_cells
+                        if c
+                    ):
                         break
                     parts.extend([c for c in next_cells if c])
                     j += 1
@@ -183,7 +240,7 @@ def extract_projects_from_table(table_rows: List[List[Optional[str]]]) -> List[D
                 cur["title"] = " ".join(cells[2:]).strip()
             elif is_label_cell(second, LABEL_PRIMARY_THEME):
                 cur["primary_theme"] = " ".join(cells[2:]).strip()
-            elif is_label_cell(second, LABEL_SUPERVISORS):
+            elif is_label_cell(second, SUPERVISOR_LABELS):
                 cur["supervisors"] = " ".join(cells[2:]).strip()
             elif is_label_cell(second, LABEL_DESCRIPTION):
                 parts = [" ".join(cells[2:]).strip()] if any(cells[2:]) else []
@@ -207,6 +264,7 @@ def extract_projects_from_table(table_rows: List[List[Optional[str]]]) -> List[D
     if cur["title"] or cur["primary_theme"] or cur["supervisors"] or cur["description"]:
         projects.append(cur)
     return projects
+
 
 # --- parse single PDF ---
 def parse_pdf(pdf_path: Union[str, Path]) -> List[Dict[str, str]]:
@@ -236,10 +294,12 @@ def parse_pdf(pdf_path: Union[str, Path]) -> List[Dict[str, str]]:
             p[k] = normalize(v)
     return all_projects
 
+
 # --- process a single PDF and return list of projects (no csv write) ---
 def projects_from_pdf(pdf_path: Union[str, Path]) -> List[Dict[str, str]]:
     logger.info("Parsing PDF: %s", Path(pdf_path).resolve())
     return parse_pdf(pdf_path)
+
 
 # --- process all PDFs into one CSV ---
 def process_all_pdfs_to_one_csv(output_path: Optional[Union[str, Path]] = None) -> Path:
@@ -279,10 +339,10 @@ def process_all_pdfs_to_one_csv(output_path: Optional[Union[str, Path]] = None) 
     # --- CLEAN: replace empty/missing/NaN/whitespace-only values with the string "empty" ---
     df = df.apply(lambda col: col.map(clean_entry))
 
-
     df.to_csv(output_path, index=False)
     logger.info("Wrote %d rows to: %s", len(df), output_path.resolve())
     return output_path.resolve()
+
 
 # --- process single PDF into CSV (existing behavior) ---
 def process_pdf_to_csv(pdf_path: Union[str, Path], output_path: Optional[Union[str, Path]] = None) -> Path:
@@ -319,9 +379,11 @@ def process_pdf_to_csv(pdf_path: Union[str, Path], output_path: Optional[Union[s
     logger.info("Wrote %d rows to: %s", len(df), output_path.resolve())
     return output_path.resolve()
 
+
 # --- CLI ---
 def _cli():
     import argparse
+
     parser = argparse.ArgumentParser(description="Extract projects from PDF(s) into CSV (pdfplumber).")
     parser.add_argument("pdf", nargs="?", default=None,
                         help="Optional PDF filename in data/raw_PDFs to process. If omitted, all PDFs in raw_PDFs/ are processed.")
@@ -333,6 +395,7 @@ def _cli():
     else:
         out = process_pdf_to_csv(Path(args.pdf), args.output)
     logger.info("Done — CSV at: %s", out)
+
 
 if __name__ == "__main__":
     _cli()
