@@ -27,9 +27,9 @@ It is difficult to comprehensively search the large number of available rotation
 mend() function.
 
 ## Installation Guide
-# Create a virtual environment
-# Install with Pip (recommended)
-# Install from source
+### Create a virtual environment
+### Install with Pip (recommended)
+### Install from source
 
 ## Simple Usage Guide
 * Bring up the help menu with 
