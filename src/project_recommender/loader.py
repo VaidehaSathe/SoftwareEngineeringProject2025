@@ -82,6 +82,3 @@ def move_pdf(filepath):
         copied.append(destination)
     
     return {"Copied into": raw_PDFs_directory, "Copied files": copied, "Number of files copied": len(copied)}
-
-# Test
-# move_pdf("zzz") 
