@@ -10,7 +10,7 @@ It is difficult to comprehensively search the large number of available rotation
 ## Modules:
 ### PDF Loader
 * Copies PDFs from a user-specified directory into the virtual environment.
-* Parses project data from a PDF using `pdfplumber`.
+* Parses project data from tabularized PDF using `pdfplumber`.
 
 ### Preprocessor
 * Tokenizes project descriptions from the dataframe and extracts POS tags using NLTK.
