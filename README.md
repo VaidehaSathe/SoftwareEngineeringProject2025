@@ -19,7 +19,7 @@ It is difficult to comprehensively search the large number of available rotation
 ### Recommender
 * Takes three inputs: a long user query (>15 words), a file with tokenized descriptions, and the number of desired projects (N).
 * Resolves filepath, vectorizes text with TF-IDF, and calculates cosine similarity between the query and project descriptions.
-* Returns a DataFrame of the top N similar projects.
+* Returns N projects based on a similarity score.
 
 ### CLI
 * Provides a command-line interface (CLI) to run the full pipeline: Load PDFs → Process PDFs → Tokenize CSVs → Recommend projects.
@@ -50,6 +50,13 @@ project-recommender all "Your query goes here"
 ```
 project-recommender load /home/project-folder/
 project-recommender all "I want to learn about machine learning methods for collective cell movement. I would like to work with industry, and I want to use mathematical modelling in my research."
+
+# output
+project-title supervisors department  score
+title1        supervisor1 department1 0.98
+title2        supervisor2 department2 0.44
+title3        supervisor3 department3 0.12
+...
 ```
 
 ## Advanced Usage Guide
