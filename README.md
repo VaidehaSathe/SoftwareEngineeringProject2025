@@ -74,7 +74,7 @@ python -m pip install dist/project_recommender-0.0.1-py3-none-any.whl
 project-recommender -h
 project-recommender -help
 ```
-* Load PDFs by copying filepath of folder containing PDFs (get the filepath to your folder by right click -> copy as path)
+* Load PDFs by copying filepath of folder containing PDFs (get the filepath to your folder by right click → copy as path)
 ```
 project-recommender load your-path-goes-here
 ```
