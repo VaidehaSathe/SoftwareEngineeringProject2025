@@ -4,10 +4,13 @@ Thomas Shaw\
 Oliver Staples\
 Vaideha Sathe
 
+## What does this do?
+`project-recommender` is a python package that finds ILESLA projects most suited for your demand. Simply save the project booklets from the canvas website, and run this package along with a description of what you want to explore in your topic, and let clever natural language processing do its thing.
+
 ## Problem Statement:
 It is difficult to comprehensively search the large number of available rotation projects in the ILESLA Booklets. Broad sorting of projects into core themes limits search scope to narrower bands and restricts cross-theme project inspiration. This package aims to provide a text-to-text search tool to parse project booklets (in PDF format) and provide recommendations based on a user-created query string by developing a natural language-based search and recommendation system based on TF-IDF and embedding-based similarity scoring.
 
-## Modules:
+## Modules
 ### PDF Loader
 * Copies PDFs from a user-specified directory into the virtual environment.
 * Parses project data from tabularized PDF using `pdfplumber`.
