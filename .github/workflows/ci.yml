@@ -85,9 +85,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      # -----------------------------
-      # Install dependencies (Linux)
-      # -----------------------------
       - name: Install dependencies (Linux)
         if: matrix.os == 'ubuntu-latest'
         shell: bash
@@ -99,9 +96,6 @@ jobs:
             pip install pytest pandas nltk
           fi
 
-      # -----------------------------
-      # Install dependencies (Windows)
-      # -----------------------------
       - name: Install dependencies (Windows)
         if: matrix.os == 'windows-latest'
         shell: pwsh
@@ -113,9 +107,6 @@ jobs:
             pip install pytest pandas nltk
           }
 
-      # -----------------------------
-      # Prepare NLTK data (Linux)
-      # -----------------------------
       - name: Prepare NLTK data (Linux)
         if: matrix.os == 'ubuntu-latest'
         shell: bash
@@ -129,26 +120,15 @@ jobs:
           PY
           echo "NLTK_DATA=${RUNNER_TEMP}/nltk_data" >> $GITHUB_ENV
 
-      # -----------------------------
-      # Prepare NLTK data (Windows)
-      # -----------------------------
       - name: Prepare NLTK data (Windows)
         if: matrix.os == 'windows-latest'
         shell: pwsh
         run: |
-          python - <<'PY'
-          import nltk, os
-          d = os.path.join(os.environ.get("RUNNER_TEMP"), "nltk_data")
-          os.makedirs(d, exist_ok=True)
-          nltk.download(['punkt','averaged_perceptron_tagger','wordnet','stopwords'], download_dir=d)
-          print("NLTK data installed to:", d)
-          PY
+          # Use python -c with single-quoted string so PowerShell doesn't interpolate variables
+          python -c 'import nltk, os; d = os.path.join(os.environ.get("RUNNER_TEMP"), "nltk_data"); os.makedirs(d, exist_ok=True); nltk.download(["punkt","averaged_perceptron_tagger","wordnet","stopwords"], download_dir=d); print("NLTK data installed to:", d)'
           $nltd = Join-Path $env:RUNNER_TEMP 'nltk_data'
           Add-Content -Path $env:GITHUB_ENV -Value "NLTK_DATA=$nltd"
 
-      # -----------------------------
-      # Show environment info (Linux)
-      # -----------------------------
       - name: Show environment info (Linux)
         if: matrix.os == 'ubuntu-latest'
         shell: bash
@@ -157,9 +137,6 @@ jobs:
           pip --version
           pip list --format=columns
 
-      # -----------------------------
-      # Show environment info (Windows)
-      # -----------------------------
       - name: Show environment info (Windows)
         if: matrix.os == 'windows-latest'
         shell: pwsh
@@ -168,9 +145,6 @@ jobs:
           pip --version
           pip list --format=columns
 
-      # -----------------------------
-      # Run tests (Linux)
-      # -----------------------------
       - name: Run tests (Linux)
         if: matrix.os == 'ubuntu-latest'
         shell: bash
@@ -179,13 +153,11 @@ jobs:
         run: |
           pytest -q
 
-      # -----------------------------
-      # Run tests (Windows)
-      # -----------------------------
       - name: Run tests (Windows)
         if: matrix.os == 'windows-latest'
         shell: pwsh
         env:
+          # NLTK_DATA was written to GITHUB_ENV above; this is just a fallback form
           NLTK_DATA: ${{ runner.temp }}\nltk_data
         run: |
           pytest -q
