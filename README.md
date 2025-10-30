@@ -17,14 +17,13 @@ It is difficult to comprehensively search the large number of available rotation
 * Lemmatizes tokens, removes stopwords and common words, and expands contractions.
 
 ### Recommender
-* Takes three inputs: a long user query (>15 words), a file with tokenized descriptions, and the number of desired projects (N).
+* Takes three inputs: a user query of at least 15 words, a file with tokenized descriptions, and the number of desired projects.
 * Resolves filepath, vectorizes text with TF-IDF, and calculates cosine similarity between the query and project descriptions.
-* Returns N projects based on a similarity score.
+* Returns N projects (by default, 10) based on a similarity score.
 
 ### CLI
 * Provides a command-line interface (CLI) to run the full pipeline: Load PDFs → Process PDFs → Tokenize CSVs → Recommend projects.
 * Allows flexible use from the project root with options for specific files, queries, and output locations.
-mend() function.
 
 ## Installation Guide
 ### Create a virtual environment
