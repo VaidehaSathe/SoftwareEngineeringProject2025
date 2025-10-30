@@ -67,6 +67,8 @@ python -m pip install dist/project_recommender-0.0.1-py3-none-any.whl
 ```
 
 ## Simple Usage Guide
+* As a prerequisite, download all project booklets from the Canvas page and place them in a folder. 
+
 * Bring up the help menu with 
 ```
 project-recommender -h
