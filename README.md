@@ -26,11 +26,16 @@ It is difficult to comprehensively search the large number of available rotation
 * Allows flexible use from the project root with options for specific files, queries, and output locations.
 
 ## Installation Guide
+Follow these steps exactly for the program to work.
 ### Create a virtual environment
 ```
 python3 -m venv env # creates a virtual environment called env
-source env/bin/actviate # activates, will see (env) in terminal
-```
+
+# On Windows
+venv\Scripts\activate
+
+# On macOS and Linux
+source venv/bin/activate```
 ### Install with Pip (recommended)
 ```
 pip install project-recommender
