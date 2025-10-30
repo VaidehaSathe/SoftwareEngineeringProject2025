@@ -46,6 +46,8 @@ pip install requirements.txt
 ### Install from source
 ```
 # Create build tools and build the .whl file
+# Needs to be in source folder
+
 python -m pip install --upgrade build
 python -m build
 
