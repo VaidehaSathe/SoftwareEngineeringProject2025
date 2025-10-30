@@ -19,6 +19,7 @@ python -m project_recommender.cli recommend "I want epidemiology projects"
 # Run full pipeline (process -> tokenize -> recommend)
 python -m project_recommender.cli all --query "machine learning for biology"
 """
+
 from __future__ import annotations
 
 import argparse
@@ -27,54 +28,61 @@ import logging
 from pathlib import Path
 import shutil
 import contextlib
+import sys
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
 
-import importlib
-import sys
-from pathlib import Path
-
-def _lazy_import_module(module_basename: str):
+def _import_sibling_module(module_basename: str):
     """
-    Import module as project_recommender.<module_basename>.
-    If needed, add src/ to sys.path (calculated relative to this file).
-    Raises ModuleNotFoundError with helpful diagnostics if import fails.
-    """
-    pkg_name = "project_recommender"
-    full_name = f"{pkg_name}.{module_basename}"
+    Import a sibling module from the same package instance that contains this cli module.
 
-    # 1) Try package import first (normal case)
+    Strategy:
+      1) Try a relative import: import .<module_basename> with package=__package__.
+         This ensures we import modules from the same package object (avoids two-copy problem).
+      2) If that fails, print the traceback so the user sees the real error.
+      3) Fall back to attempting an absolute import 'project_recommender.<module_basename>'.
+         If still missing, add src/ (repo layout) to sys.path and retry, then raise helpful diagnostics.
+    """
+    full_name = f"{__package__}.{module_basename}" if __package__ else f"project_recommender.{module_basename}"
+
+    # 1) Try relative import first (preferred)
     try:
-        return importlib.import_module(full_name)
-    except ModuleNotFoundError as e_pkg:
-        # Continue to try to make it importable by adding src/
-        pass
+        return importlib.import_module(f".{module_basename}", package=__package__)
+    except Exception as e_rel:
+        # Print full traceback so we can see the real cause (missing dependency, syntax error, etc.)
+        import traceback
 
-    # 2) Compute src directory (this file is at src/project_recommender/cli.py)
-    here = Path(__file__).resolve()
-    # here.parents[1] -> src (since here is src/project_recommender/cli.py)
-    src_dir = here.parents[1]
-    if str(src_dir) not in sys.path:
-        sys.path.insert(0, str(src_dir))
+        traceback.print_exc()
 
-    # 3) Try again
+    # 2) Fallback: try absolute import from package name
     try:
         return importlib.import_module(full_name)
     except ModuleNotFoundError:
-        # 4) Final helpful fallback: show diagnostics and raise a clear error
-        msg = (
-            f"Could not import {full_name!r}.\n"
-            f"Checked package import and added src dir: {src_dir!s}\n"
-            f"sys.path (first entries):\n  " + "\n  ".join(map(str, sys.path[:6])) + "\n\n"
-            "Possible fixes:\n"
-            "  - run this from the project root (the directory that contains 'src/')\n"
-            "  - set PYTHONPATH=src when invoking python\n"
-            "  - create src/project_recommender/__init__.py if missing\n"
-            "  - install the package in editable mode: pip install -e .\n"
-        )
-        raise ModuleNotFoundError(msg)
+        # 3) Add src/ to sys.path (based on this file's location) and try again
+        here = Path(__file__).resolve()
+        # here.parents[1] -> src (since this file is src/project_recommender/cli.py)
+        src_dir = here.parents[1]
+        if str(src_dir) not in sys.path:
+            sys.path.insert(0, str(src_dir))
+        try:
+            return importlib.import_module(full_name)
+        except Exception:
+            import traceback
+
+            traceback.print_exc()
+            msg = (
+                f"Could not import {full_name!r}.\n"
+                f"Checked package import and added src dir: {src_dir!s}\n"
+                f"sys.path (first entries):\n  " + "\n  ".join(map(str, sys.path[:6])) + "\n\n"
+                "Possible fixes:\n"
+                "  - run this from the project root (the directory that contains 'src/')\n"
+                "  - set PYTHONPATH=src when invoking python\n"
+                "  - create src/project_recommender/__init__.py if missing\n"
+                "  - install the package in editable mode: pip install -e .\n"
+            )
+            raise ModuleNotFoundError(msg)
 
 
 @contextlib.contextmanager
@@ -88,6 +96,7 @@ def _push_cwd(p: Path):
         yield
     finally:
         os.chdir(prev)
+
 
 def ensure_in_project_csvs(candidate: Path, pdf_loader):
     """
@@ -121,7 +130,7 @@ def cmd_process(args: argparse.Namespace) -> Path:
     """
     Process PDFs into a single CSV (or single PDF -> CSV). Returns the produced CSV Path.
     """
-    pdf_loader = _lazy_import_module("pdf_loader_plumber")
+    pdf_loader = _import_sibling_module("pdf_loader_plumber")
     if args.pdf is None:
         out = pdf_loader.process_all_pdfs_to_one_csv(args.output)
     else:
@@ -130,13 +139,30 @@ def cmd_process(args: argparse.Namespace) -> Path:
     return Path(out)
 
 
+def cmd_load(args: argparse.Namespace):
+    """
+    Load PDFs from a local folder into the repo data/raw_PDFs directory.
+    Returns the loader.move_pdf() result (dict or message).
+    """
+    loader = _import_sibling_module("loader")  # imports project_recommender.loader
+    folder = args.folder
+    if not folder:
+        logger.error("No folder path provided for `load` command.")
+        raise ValueError("Folder path required")
+    logger.info("Loading PDFs from folder: %s", folder)
+    result = loader.move_pdf(folder)
+    # pretty-print result for CLI
+    print(result)
+    return result
+
+
 def cmd_tokenize(args: argparse.Namespace) -> Path:
     """
     Tokenize a CSV into data/tokenized_CSVs/.
     `args.csv` may be a filename (in data/project_CSVs/) or a path; we ensure the CSV is in project_CSVs.
     """
-    pdf_loader = _lazy_import_module("pdf_loader_plumber")
-    pre = _lazy_import_module("preprocessor")
+    pdf_loader = _import_sibling_module("pdf_loader_plumber")
+    pre = _import_sibling_module("preprocessor")
 
     # ensure CSV lives in project_CSVs (preprocessor expects reading from data/project_CSVs/{filename})
     csv_candidate = Path(args.csv or "projects_summary.csv")
@@ -159,8 +185,8 @@ def cmd_recommend(args: argparse.Namespace) -> str:
     Recommend using a tokenized CSV. If tokenized_csv not provided, default to
     data/tokenized_CSVs/projects_summary.csv inside the repo root.
     """
-    pdf_loader = _lazy_import_module("pdf_loader_plumber")
-    rec = _lazy_import_module("recommender")
+    pdf_loader = _import_sibling_module("pdf_loader_plumber")
+    rec = _import_sibling_module("recommender")
 
     if args.tokenized_csv:
         token_csv = Path(args.tokenized_csv)
@@ -183,7 +209,6 @@ def cmd_recommend(args: argparse.Namespace) -> str:
     # print for CLI use
     print(result)
     return result
-
 
 
 def cmd_all(args: argparse.Namespace) -> Path:
@@ -216,6 +241,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="project-recommender", description="PDF -> CSV -> Tokenize -> Recommend CLI")
     sub = parser.add_subparsers(dest="cmd", required=True)
 
+    l = sub.add_parser("load", help="Copy PDFs from a local folder into data/raw_PDFs")
+    l.add_argument("folder", help="Path to a folder containing PDFs to copy into the pipeline (data/raw_PDFs).")
+    l.set_defaults(func=cmd_load)
+
     p = sub.add_parser("process", help="Process PDF(s) into CSV(s)")
     p.add_argument("pdf", nargs="?", default=None, help="Optional PDF filename in data/raw_PDFs to process. If omitted, all PDFs are processed.")
     p.add_argument("-o", "--output", help="Explicit output CSV path (optional)", default=None)
@@ -232,7 +261,6 @@ def build_parser() -> argparse.ArgumentParser:
                 help="Number of recommendations to return (default: 10)")
     r.set_defaults(func=cmd_recommend)
 
-
     a = sub.add_parser("all", help="Run full pipeline: process -> tokenize -> (recommend)")
     a.add_argument("pdf", nargs="?", default=None, help="Optional PDF filename to process (default: all PDFs)")
     a.add_argument("-o", "--output", help="Explicit CSV output path for processing step (optional)", default=None)
@@ -240,7 +268,6 @@ def build_parser() -> argparse.ArgumentParser:
     a.add_argument("--amount", "-n", dest="amount", type=int, default=10,
                 help="Number of recommendations to return when running with --query (default: 10)")
     a.set_defaults(func=cmd_all)
-
 
     return parser
 
