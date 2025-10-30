@@ -8,9 +8,9 @@ from src.project_recommender.pdf_loader_plumber import (
     parse_pdf,
     process_pdf_to_csv,
     process_all_pdfs_to_one_csv,
-    RAW_PDF_DIR,
-    CSV_OUTPUT_DIR,
 )
+
+from src.project_recommender.loader import ( RAW_PDF_DIR, CSV_OUTPUT_DIR )
 
 @pytest.fixture(scope="module")
 def sample_pdf(tmp_path_factory):

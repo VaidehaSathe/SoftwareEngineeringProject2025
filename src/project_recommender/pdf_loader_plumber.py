@@ -23,6 +23,12 @@ from typing import List, Dict, Optional, Union
 import pdfplumber
 import pandas as pd
 import logging
+from src.project_recommender.loader import (
+    REPO_ROOT,
+    RAW_PDF_DIR,
+    CSV_OUTPUT_DIR,
+    CSV_TOK_OUTPUT_DIR,
+)
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
@@ -36,25 +42,6 @@ LABEL_PRIMARY_THEME = "primary theme"
 BOUNDARY_LABELS = {LABEL_SUPERVISORS, LABEL_DESCRIPTION, LABEL_PRIMARY_THEME, "remit"}
 STOP_DESCRIPTION_LABELS = {"reasonable expected outcome", "reasonab"}
 
-# --- repo / data dirs ---
-def repo_root_guess() -> Path:
-    try:
-        return Path(__file__).resolve().parents[2]
-    except Exception:
-        return Path.cwd()
-
-REPO_ROOT = repo_root_guess()
-
-# primary data dirs used by the pipeline
-RAW_PDF_DIR = (REPO_ROOT / "data" / "raw_PDFs").resolve()
-CSV_OUTPUT_DIR = (REPO_ROOT / "data" / "project_CSVs").resolve()
-CSV_TOK_OUTPUT_DIR = (REPO_ROOT / "data" / "tokenized_CSVs").resolve()
-
-# ensure directories exist (idempotent)
-RAW_PDF_DIR.mkdir(parents=True, exist_ok=True)
-CSV_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-CSV_TOK_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-
 # defaults
 DEFAULT_COMBINED_CSV = CSV_OUTPUT_DIR / "projects_summary.csv"
 
@@ -65,8 +52,6 @@ logger.debug("REPO_ROOT: %s", REPO_ROOT)
 logger.debug("RAW_PDF_DIR: %s", RAW_PDF_DIR)
 logger.debug("CSV_OUTPUT_DIR: %s", CSV_OUTPUT_DIR)
 logger.debug("CSV_TOK_OUTPUT_DIR: %s", CSV_TOK_OUTPUT_DIR)
-
-
 
 # --- helpers ---
 def normalize(s: Optional[str]) -> str:
