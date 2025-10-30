@@ -27,8 +27,26 @@ It is difficult to comprehensively search the large number of available rotation
 
 ## Installation Guide
 ### Create a virtual environment
+```
+python3 -m venv env # creates a virtual environment called env
+source env/bin/actviate # activates, will see (env) in terminal
+```
 ### Install with Pip (recommended)
+```
+pip install project-recommender
+pip install requirements.txt
+```
 ### Install from source
+```
+# Create build tools and build the .whl file
+python -m pip install --upgrade build
+python -m build
+
+# This creates files in dist/project_recommender-0.0.1-py3-none-any.whl, such as dist/project_recommender-0.0.1.tar.gz
+
+# Install from wheel
+python -m pip install dist/project_recommender-0.0.1-py3-none-any.whl
+```
 
 ## Simple Usage Guide
 * Bring up the help menu with 
