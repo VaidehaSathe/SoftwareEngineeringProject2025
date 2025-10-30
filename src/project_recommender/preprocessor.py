@@ -8,9 +8,6 @@
 #--------------------------------------------------------#
 import pandas as pd
 import nltk 
-from nltk.stem import WordNetLemmatizer
-lemmatizer = WordNetLemmatizer()
-from nltk.corpus import stopwords
 
 nltk_resources=['punkt', 'averaged_perceptron_tagger', 'wordnet', 'stopwords']
 
@@ -27,9 +24,13 @@ def add_nltk_resources():
             missing.append(resource)
     if missing:
         for resource in missing:
-            nltk.download(resource)
+            nltk.download(resource,quiet=True)
 
 add_nltk_resources()
+
+from nltk.stem import WordNetLemmatizer
+lemmatizer = WordNetLemmatizer()
+from nltk.corpus import stopwords
 
 stop_words = set(stopwords.words('english'))
 
