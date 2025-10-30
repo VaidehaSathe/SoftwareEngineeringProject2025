@@ -1,11 +1,11 @@
 # pdf_loader_plumber.py
 # Date: 28/10/2025
-"""
-PDF -> CSV (pdfplumber)
-Reads PDFs from:  data/raw_PDFs/
-Writes CSVs to:   data/project_CSVs/ [title,primary_theme,supervisors,description]
 
-THIS FILE ONLY RUNS FROM TERMINAL WHEN in src/project_recommender
+"""
+Description: Reads PDF files and parses into raw text
+Input: All (or single) PDFs inside data/raw_PDFs/
+Output: project_summary.csv to data/project_CSVs/ 
+        [title,primary_theme,supervisors,description]
 
 Usage:
   # Process all PDFs in data/raw_PDFs and write single CSV:
