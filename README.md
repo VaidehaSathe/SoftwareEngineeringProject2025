@@ -13,7 +13,7 @@ It is difficult to comprehensively search the large number of available rotation
 * Parses project data from a PDF using `pdfplumber`.
 
 ### Preprocessor
-* Tokenizes project descriptions from the dataframe and extracts POS tags using NLTK
+* Tokenizes project descriptions from the dataframe and extracts POS tags using NLTK.
 * Lemmatizes tokens, removes stopwords and common words, and expands contractions.
 
 ### Recommender
