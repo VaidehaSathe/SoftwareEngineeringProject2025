@@ -130,7 +130,7 @@ project-recommender tokenize data/project_CSVs/my_booklet.csv
 # default (N=10 recommendations)
 project-recommender recommend "your-prompt-goes-here"
 
-# Change number of results
+# Change number of results to 5
 project-recommender recommend "your-prompt-goes-here" -n 5
 
 # Specify particular tokenized CSV
