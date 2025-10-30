@@ -11,6 +11,26 @@ import nltk
 from nltk.stem import WordNetLemmatizer
 lemmatizer = WordNetLemmatizer()
 from nltk.corpus import stopwords
+
+nltk_resources=['punkt', 'averaged_perceptron_tagger', 'wordnet', 'stopwords']
+
+def add_nltk_resources():
+    """
+    Checks if the above nltk resources are available
+    If they aren't, download them
+    """
+    missing = []
+    for resource in nltk_resources:
+        try:
+            nltk.data.find(resource)
+        except LookupError:
+            missing.append(resource)
+    if missing:
+        for resource in missing:
+            nltk.download(resource)
+
+add_nltk_resources()
+
 stop_words = set(stopwords.words('english'))
 
 verb_codes = {'VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ'}
