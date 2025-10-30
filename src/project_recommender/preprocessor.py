@@ -77,40 +77,53 @@ def data_preprocessor(filename):
     """
     Preprocesses the 'description' column of the input DataFrame.
 
-    Removes rows that either:
-      • contain more than 3 'empty' entries overall, OR
-      • have an empty or 'empty' description field.
-
+    Cleans data by:
+      • Removing rows with more than two 'empty' entries overall.
+      • Replacing empty/'empty' descriptions with their corresponding title.
+      • Replacing empty/'empty' supervisor fields or those with >15 words with "parse failed".
     Then tokenizes the description and saves the tokenized CSV.
     """
 
-    # The input (original) file
+    import numpy as np
+
+    # Load input CSV
     dataframe = pd.read_csv(f"data/project_CSVs/{filename}")
 
-    def too_many_rows(row):
+    # --- Rule 1: remove rows with too many 'empty' entries ---
+    def too_many_empties(row):
         text = " ".join(map(str, row.values)).lower()
-        return text.count("empty") > 3
+        return text.count("empty") > 2
 
     before_count = len(dataframe)
+    dataframe = dataframe[~dataframe.apply(too_many_empties, axis=1)].reset_index(drop=True)
 
-    # --- New: remove rows with empty/blank/"empty" descriptions ---
-    # Make sure we handle NaN safely
-    desc = dataframe["description"].fillna("").astype(str).str.strip().str.lower()
-    empty_desc_mask = (desc == "") | (desc == "empty")
+    # --- Rule 2: fill empty/'empty' descriptions with title ---
+    desc = dataframe["description"].fillna("").astype(str).str.strip()
+    empty_desc_mask = (desc == "") | (desc.str.lower() == "empty")
+    num_filled = empty_desc_mask.sum()
+    if num_filled > 0:
+        dataframe.loc[empty_desc_mask, "description"] = dataframe.loc[empty_desc_mask, "title"]
+        print(f"🧩 Filled {num_filled} empty descriptions with corresponding titles.")
 
-    # Apply both filters: too many "empty" entries OR empty description
-    combined_mask = dataframe.apply(too_many_rows, axis=1) | empty_desc_mask
+    # --- Rule 3: handle supervisors ---
+    sup = dataframe["supervisors"].fillna("").astype(str).str.strip()
+    too_long_mask = sup.apply(lambda x: len(x.split()) > 15)
+    empty_sup_mask = (sup == "") | (sup.str.lower() == "empty")
+    parse_failed_mask = too_long_mask | empty_sup_mask
+    num_failed = parse_failed_mask.sum()
+    if num_failed > 0:
+        dataframe.loc[parse_failed_mask, "supervisors"] = "parse failed"
+        print(f"⚠️  Marked {num_failed} supervisor entries as 'parse failed' (empty or >15 words).")
 
-    dataframe = dataframe[~combined_mask].reset_index(drop=True)
+    # --- Summary of cleanup ---
     after_count = len(dataframe)
-
     removed = before_count - after_count
     if removed != 0:
-        print(f"🧹 Removed {removed} rows (too many 'empty' fields or empty description).")
+        print(f"🧹 Removed {removed} rows with too many 'empty' fields.")
     else:
-        print("🧹 No rows needed removal.")
+        print("🧹 No rows removed for excessive 'empty' fields.")
 
-    # Tokenize the description column
+    # --- Tokenize the description column ---
     dataframe["tokenized_description"] = dataframe["description"].apply(preprocess_text)
 
     # The output (new) file name
@@ -118,6 +131,9 @@ def data_preprocessor(filename):
 
     # Save to tokenized_CSVs directory
     dataframe.to_csv(f"data/tokenized_CSVs/{new_filename}", index=False)
+    print(f"💾 Saved cleaned and tokenized CSV to data/tokenized_CSVs/{new_filename}")
+
+
 # Previous code to delete rows
 # def data_preprocessor(filename):
 #     """
