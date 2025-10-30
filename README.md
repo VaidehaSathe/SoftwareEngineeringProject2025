@@ -5,7 +5,7 @@ Oliver Staples\
 Vaideha Sathe
 
 ## What does this do?
-`project-recommender` is a python package that finds ILESLA projects most suited for your demand. Simply save the project booklets from the canvas website, and run this package along with a description of what you want to explore in your topic, and let clever natural language processing do its thing. 
+`project-recommender` is a python package that finds ILESLA projects most suited for you. Simply save the project booklets from the canvas website, and run this package along with a description of what you want to explore, and let clever natural language processing do its thing. 
 
 This is suitable for those who want to...
 * explore different potential projects in simple human language
