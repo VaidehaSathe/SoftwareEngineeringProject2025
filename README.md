@@ -10,7 +10,7 @@ Vaideha Sathe
 This is suitable for those who want to...
 * explore different potential projects in simple human language
 * get recommdations on projects across ALL themes
-* find matches to your interests that you may have misses
+* find matches to your interests that you may have missed
 
 ## Problem Statement:
 It is difficult to comprehensively search the large number of available rotation projects in the ILESLA Booklets. Broad sorting of projects into core themes limits search scope to narrower bands and restricts cross-theme project inspiration. This package aims to provide a text-to-text search tool to parse project booklets (in PDF format) and provide recommendations based on a user-created query string by developing a natural language-based search and recommendation system based on TF-IDF and embedding-based similarity scoring.
