@@ -1,7 +1,7 @@
 """
 preprocessor.py
 Date: 27/10/2025
-
+--------------------------------------------------------#
 Description: This module contains functions to preprocess text data to feed into the recommender module.
 - data_preprocessor: Tokenizes all description elements from Extracted Data CSV
 - query_preprocessor: Tokenizes input text string for recommender
@@ -9,6 +9,7 @@ Description: This module contains functions to preprocess text data to feed into
 Inputs: Origanal Text
 
 Outputs: Tokenized Text
+--------------------------------------------------------#
 """
 
 import pandas as pd

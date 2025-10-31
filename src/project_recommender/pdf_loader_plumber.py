@@ -19,6 +19,7 @@ python src/project_recommender/pdf_loader_plumber.py somefile.pdf
 
 - Specify explicit output file
 python src/project_recommender/pdf_loader_plumber.py -o data/project_CSVs/my_projects.csv
+--------------------------------------------------------#
 """
 
 from pathlib import Path
@@ -287,7 +288,7 @@ def parse_pdf(pdf_path: Union[str, Path]) -> List[Dict[str, str]]:
     """
     pdf_path = Path(pdf_path)
     if not pdf_path.exists():
-        raise FileNotFoundError(f"PDF not found: {pdf_path}")
+        raise FileNotFoundError(f"Either PDF not found or using proper syntax (use -h suffix for help): {pdf_path}")
     all_projects: List[Dict[str, str]] = []
     with pdfplumber.open(pdf_path) as pdf:
         for page in pdf.pages:
@@ -378,7 +379,7 @@ def process_pdf_to_csv(pdf_path: Union[str, Path], output_path: Optional[Union[s
         if candidate.exists():
             pdf_path = candidate
     if not pdf_path.exists():
-        raise FileNotFoundError(f"PDF not found: {pdf_path}")
+        raise FileNotFoundError(f"Either PDF not found or using proper syntax (use -h suffix for help): {pdf_path}")
 
     if output_path is None:
         output_path = CSV_OUTPUT_DIR / (pdf_path.stem + ".csv")
