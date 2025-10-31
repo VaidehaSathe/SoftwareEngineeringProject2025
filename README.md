@@ -34,10 +34,9 @@ source venv/bin/activate
 ```
 
 ### Install with Pip (recommended)
+
 ```
-pip install -i https://test.pypi.org/simple/ \
-  --extra-index-url https://pypi.org/simple \
-  project-recommender==0.0.1
+pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple project-recommender==0.0.2
 ```
 
 Confirm `project-recommender` is downloaded with `pip list`
