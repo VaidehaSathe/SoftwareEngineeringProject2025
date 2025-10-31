@@ -91,6 +91,54 @@ def test_data_preprocessor_missing_file(tmp_path, monkeypatch):
         ppr.data_preprocessor("nonexistent.csv")
 
 
+# def test_data_preprocessor_null_description(tmp_path, monkeypatch):
+#     """Should handle null or NaN values in the description column gracefully."""
+
+#     # Create temporary folder structure
+#     input_dir = tmp_path / "data" / "project_CSVs"
+#     output_dir = tmp_path / "data" / "tokenized_CSVs"
+#     input_dir.mkdir(parents=True)
+#     output_dir.mkdir(parents=True)
+
+#     # Create a dummy CSV with one normal and one null description
+#     filename = "projects.csv"
+#     input_file = input_dir / filename
+#     df_in = pd.DataFrame({
+#         "title": ["Book 1", "Book 2"],
+#         "description": ["This is a project", None]  # one valid, one None
+#     })
+#     df_in.to_csv(input_file, index=False)
+
+#     # Monkeypatch working directory to tmp_path
+#     monkeypatch.chdir(tmp_path)
+
+#     # Monkeypatch preprocess_text to handle None gracefully
+#     def safe_preprocess(text):
+#         if text is None or not isinstance(text, str):
+#             return ""
+#         return text.upper()
+
+#     monkeypatch.setattr(ppr, "preprocess_text", safe_preprocess)
+
+#     # Run the function
+#     ppr.data_preprocessor(filename)
+
+#     # Check that the expected output file was created
+#     output_file = output_dir / f"tokenized_{filename}"
+#     assert output_file.exists(), f"Expected output file not found: {output_file}"
+
+#     # Verify the output CSV contents
+#     df_out = pd.read_csv(output_file)
+
+#     # Confirm that the tokenized_description column exists
+#     assert "tokenized_description" in df_out.columns
+
+#     # The first row should be uppercase, the second should be empty
+#     assert df_out["tokenized_description"].iloc[0] == "THIS IS A PROJECT"
+#     # Pandas might interpret an empty field as NaN, so handle both cases
+#     val = df_out["tokenized_description"].iloc[1]
+#     assert pd.isna(val) or val == ""
+
 def test_data_preprocessor_null_description(tmp_path, monkeypatch):
     """Should handle null or NaN values in the description column gracefully."""
 
@@ -133,11 +181,10 @@ def test_data_preprocessor_null_description(tmp_path, monkeypatch):
     # Confirm that the tokenized_description column exists
     assert "tokenized_description" in df_out.columns
 
-    # The first row should be uppercase, the second should be empty
+    # The first row should be uppercase, the second should be the title (filled for empty description)
     assert df_out["tokenized_description"].iloc[0] == "THIS IS A PROJECT"
-    # Pandas might interpret an empty field as NaN, so handle both cases
-    val = df_out["tokenized_description"].iloc[1]
-    assert pd.isna(val) or val == ""
+    # The empty description should have been replaced by the title ("Book 2") and then tokenized.
+    assert df_out["tokenized_description"].iloc[1] == "BOOK 2"
 
 
 def test_data_preprocessor_bad_data_format(tmp_path, monkeypatch):
