@@ -35,7 +35,7 @@ pip install -i https://test.pypi.org/simple/ \
   --extra-index-url https://pypi.org/simple \
   project-recommender==0.0.1
 ```
-### Install from source (for advanced users)#
+### Install from source (for advanced users)
 * Clone the repository 
 ```
 # Clone over https
