@@ -5,7 +5,7 @@ Oliver Staples\
 Vaideha Sathe
 
 ## What does this do?
-`project-recommender` is a python package that finds ILESLA projects most suited for you. Simply save the project booklets from the canvas website, and run this package along with a description of what you want to explore, and let clever natural language processing do its thing. 
+`project-recommender` is a python package that finds ILESLA projects most suited for you. Simply save the project booklets from the canvas website, run this package along with a description of what you want to explore, and let clever natural language processing do its thing. 
 
 This is suitable for those who want to...
 * explore potential projects in simple human language
@@ -23,7 +23,7 @@ Follow these steps exactly for the program to work.
 python3 -m venv venv 
 
 # On Windows
-venv\Scripts\activate
+venv\Scripts\Activate.ps1
 
 # On macOS and Linux
 source venv/bin/activate
@@ -58,7 +58,7 @@ project-recommender -help
 ```
 * Load PDFs by copying filepath of folder containing PDFs (get the filepath to your folder by right click → copy as path)
 ```
-project-recommender load your-path-goes-here
+project-recommender load (absolute)path/to/your/pdf/folder
 ```
 * Generate recommendations based on your query
 ```
