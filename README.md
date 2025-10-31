@@ -84,13 +84,13 @@ project-recommender load (absolute)path/to/your/pdf/folder
 ```
 Generate recommendations based on your query
 ```
-project-recommender all "Your query goes here"
+project-recommender all --query "Your query goes here"
 ```
 
 ## Example Usage
 ```
 project-recommender load /home/project-folder/
-project-recommender all "I want to learn about machine learning methods for collective cell movement. I would like to work with industry, and I want to use mathematical modelling in my research."
+project-recommender all --query "I want to learn about machine learning methods for collective cell movement. I would like to work with industry, and I want to use mathematical modelling in my research."
 
 # output
 project-title supervisors department  score
@@ -135,6 +135,7 @@ project-recommender tokenize data/project_CSVs/my_booklet.csv
 ```
 
 * **recommend**: give top-N recommendations for a given text query
+Usage: `project-recommender recommend [-h] [--tokenized-csv TOKENIZED_CSV] [--amount AMOUNT] query`
 ```
 # default (N=10 recommendations)
 project-recommender recommend "your-prompt-goes-here"
@@ -144,6 +145,19 @@ project-recommender recommend "your-prompt-goes-here" -n 5
 
 # Specify particular tokenized CSV
 project-recommender recommend "your-prompt-goes-here" --tokenized-csv data/tokenized_CSVs/tokenized_my_booklet.csv
+```
+
+* **all**: run the process, tokenize, recommend pipeline at once
+Usage: `project-recommender all [-h] [-o OUTPUT] [--query QUERY] [--amount AMOUNT] [pdf]`
+```
+# default
+project-recommender all -query "your-prompt-goes-here"
+
+# Change number of results to 5
+project-recommender all -query "your-prompt-goes-here" -amount 5
+
+# Specify CSV output path for processing step
+project-recommender all -o /home/path/to/csv -query "your-prompt-goes-here"
 ```
 
 ## Modules
