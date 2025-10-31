@@ -105,6 +105,7 @@ Note that if you put in another prompt and it recommends projects with higher si
 
 The input prompt also has to be longer than 15 words, in order to give more meaningful responses.
 
+Also note that the Open-IIC booklet contains duplicates—for best results don't use this file.
 ## Advanced Usage Guide
 In general, each command takes the form `project-recommender <command> [options]`. Each command `load` `process` `tokenize` `all` has several options.
 
