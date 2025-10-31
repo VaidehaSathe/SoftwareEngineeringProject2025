@@ -39,6 +39,8 @@ pip install -i https://test.pypi.org/simple/ \
   --extra-index-url https://pypi.org/simple \
   project-recommender==0.0.1
 ```
+* Confirm project-recommender is downloaded with `pip list`
+  
 ### Install from source (for advanced users, skip if you installed with Pip)
 Clone the repository 
 ```
