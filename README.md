@@ -109,11 +109,15 @@ The input prompt also has to be longer than 15 words, in order to give more mean
 In general, each command takes the form `project-recommender <command> [options]`. Each command `load` `process` `tokenize` `all` has several options.
 
 * **load**: copies PDFs from system's working directory (/path/to/project_pdfs) to inside your venv.
+
+Usage: `project-recommender load [-h] folder`
 ```
 project-recommender load /path/to/project_pdfs
 ```
 
 * **process**: extracts project data from one or more PDFs
+
+Usage: `usage: project-recommender process [-h] [-o OUTPUT] [pdf]`
 ```
 # default (process all PDFs at once)
 project-recommender process
@@ -126,6 +130,8 @@ project-recommender process -o data/project_CSVs/my_booklet.csv
 ```
 
 * **tokenize**: tokenizes the description text in a CSV file
+
+Usage: `project-recommender tokenize [-h] [csv]`
 ```
 # default (proceses project_summary.csv)
 project-recommender tokenize
@@ -135,6 +141,7 @@ project-recommender tokenize data/project_CSVs/my_booklet.csv
 ```
 
 * **recommend**: give top-N recommendations for a given text query
+
 Usage: `project-recommender recommend [-h] [--tokenized-csv TOKENIZED_CSV] [--amount AMOUNT] query`
 ```
 # default (N=10 recommendations)
@@ -148,6 +155,7 @@ project-recommender recommend "your-prompt-goes-here" --tokenized-csv data/token
 ```
 
 * **all**: run the process, tokenize, recommend pipeline at once
+
 Usage: `project-recommender all [-h] [-o OUTPUT] [--query QUERY] [--amount AMOUNT] [pdf]`
 ```
 # default
