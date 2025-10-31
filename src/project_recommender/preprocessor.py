@@ -133,39 +133,6 @@ def data_preprocessor(filename):
     dataframe.to_csv(f"data/tokenized_CSVs/{new_filename}", index=False)
     print(f"Saved cleaned and tokenized CSV to data/tokenized_CSVs/{new_filename}")
 
-
-# Previous code to delete rows
-# def data_preprocessor(filename):
-#     """
-#     Preprocesses the 'description' column of the input DataFrame.
-#     Args:
-#         CSV File (.csv): The project list CSV name from the data/project_CSVs folder.
-#     Saves:
-#         CSV File (.csv): A new CSV with an additional 'tokenized_description'
-#           column in data/tokenized_CSVs folder.
-#     Returns:
-#         None
-#     """
-#     # The input (original) file
-#     dataframe = pd.read_csv(f'data/project_CSVs/{filename}')
-#     def too_many_rows(row):
-#         text = " ".join(map(str, row.values)).lower()
-#         # Remove row if "empty" appears more than twice
-#         return text.count("empty") > 2
-#     before_count = len(dataframe)
-#     # Drop rows where too_many_rows() is True
-#     dataframe = dataframe[~dataframe.apply(too_many_rows, axis=1)]
-#     after_count = len(dataframe)
-#     if before_count - after_count != 0:
-#         print(f"Removed {before_count - after_count} rows containing 'empty' more than twice.")
-#     else:
-#         print("No need to remove any rows.")
-#     # Tokenize the description column
-#     dataframe['tokenized_description'] = dataframe['description'].apply(preprocess_text)
-#     # The output (new) file name
-#     new_filename = f"tokenized_{filename}"
-#     # Save to tokenized_CSVs directory
-#     dataframe.to_csv(f"data/tokenized_CSVs/{new_filename}", index=False)
 def query_preprocessor(query):
     """
     Preprocesses the input query string.
