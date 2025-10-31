@@ -1,7 +1,7 @@
 """
 recommender.py
 Date: 28/10/2025
-
+--------------------------------------------------------#
 Description: Based on a user query and a tokenized CSV file containing project info,
 this function will return a certain number of projects (dedicated by the user)
 
@@ -16,12 +16,13 @@ Outputs:
 Notes:
 - Do not run this file directly. If you do, remove the dot from .preprocessor
 - When running this file go to /SoftwareEngineeringProject2025, then 
- PYTHONPATH=src python -m project_recommender.cli recommend "I want biology projects" --tokenized-csv tokenized_projects_summary.csv
+PYTHONPATH=src python -m project_recommender.cli recommend "I want biology projects" --tokenized-csv tokenized_projects_summary.csv
 - Alternatively, do (from project root /SoftwareEngineeringProject2025 ):
 pip install -e .
 python -m project_recommender.cli recommend "I want biology projects"
 
 Test code is at the bottom
+--------------------------------------------------------#
 """
 
 from pathlib import Path
