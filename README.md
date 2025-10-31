@@ -36,7 +36,11 @@ source venv/bin/activate
 ### Install with Pip (recommended)
 
 ```
-pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple project-recommender==0.0.2
+# latest version
+pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple project-recommender
+
+# latest beta release
+pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple project-recommender==0.1.0
 ```
 
 Confirm `project-recommender` is downloaded with `pip list`
@@ -58,12 +62,12 @@ python -m build
 ```
 This creates files in the dist/ folder, like
 ```
-dist/project_recommender-0.0.2-py3-none-any.whl
-dist/project_recommender-0.0.2.tar.gz
+dist/project_recommender-0.1.0-py3-none-any.whl
+dist/project_recommender-0.1.0.tar.gz
 ```
 Build from wheel
 ```
-python -m pip install dist/project_recommender-0.0.2-py3-none-any.whl
+python -m pip install dist/project_recommender-0.1.0-py3-none-any.whl
 ```
 
 ## Simple Usage Guide
