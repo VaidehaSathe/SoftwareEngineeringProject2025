@@ -17,7 +17,7 @@ It is difficult to comprehensively search the large number of available rotation
 
 ## Requirements
 * Python version: 3.11 - 3.14
-* Acess to `pip`, `venv`, and optionally `git`
+* Access to `pip`, `venv`, and optionally `git`
 
 ## Installation guide
 Follow these steps exactly for the program to work.
