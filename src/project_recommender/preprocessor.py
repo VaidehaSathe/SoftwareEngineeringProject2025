@@ -84,8 +84,6 @@ def data_preprocessor(filename):
     Then tokenizes the description and saves the tokenized CSV.
     """
 
-    import numpy as np
-
     # Load input CSV
     dataframe = pd.read_csv(f"data/project_CSVs/{filename}")
 

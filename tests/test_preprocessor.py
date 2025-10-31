@@ -56,6 +56,7 @@ def test_data_preprocessor_good_data(tmp_path, monkeypatch):
     df_in = pd.DataFrame({
         "title": ["Book 1", "Book 2"],
         "description": ["This is the first project", "Second project description"]
+        "supervisors": ["Dr A", "Prof B"]
     })
     df_in.to_csv(input_file, index=False)
 
@@ -154,6 +155,7 @@ def test_data_preprocessor_null_description(tmp_path, monkeypatch):
     df_in = pd.DataFrame({
         "title": ["Book 1", "Book 2"],
         "description": ["This is a project", None]  # one valid, one None
+        "supervisors": ["Dr A", "Prof B"]
     })
     df_in.to_csv(input_file, index=False)
 
