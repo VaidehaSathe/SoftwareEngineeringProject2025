@@ -36,7 +36,7 @@ source venv/bin/activate
 ### Install with Pip (recommended)
 
 ```
-pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple project-recommender==0.1.0
+pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple project-recommender==0.0.2
 ```
 
 Confirm `project-recommender` is downloaded with `pip list`
@@ -58,12 +58,12 @@ python -m build
 ```
 This creates files in the dist/ folder, like
 ```
-dist/project_recommender-0.0.1-py3-none-any.whl
-dist/project_recommender-0.0.1.tar.gz
+dist/project_recommender-0.0.2-py3-none-any.whl
+dist/project_recommender-0.0.2.tar.gz
 ```
 Build from wheel
 ```
-python -m pip install dist/project_recommender-0.0.1-py3-none-any.whl
+python -m pip install dist/project_recommender-0.0.2-py3-none-any.whl
 ```
 
 ## Simple Usage Guide
@@ -100,7 +100,6 @@ Words or phrases in your input prompt that are similar to those in project descr
 Note that if you put in another prompt and it recommends projects with higher similarity scores than with your previous prompt, it is not necessarily an indicator of a 'better match' - you might have just put more words into the input. On average, the more words you put in, the higher the score.
 
 The input prompt also has to be longer than 15 words, in order to give more meaningful responses.
-
 
 ## Advanced Usage Guide
 In general, each command takes the form `project-recommender <command> [options]`. Each command `load` `process` `tokenize` `all` has several options.
