@@ -15,7 +15,11 @@ This is suitable for those who want to...
 ## Problem Statement
 It is difficult to comprehensively search the large number of available rotation projects in the ILESLA Booklets. Broad sorting of projects into core themes limits search scope to narrower bands and restricts cross-theme project inspiration. This package aims to provide a text-to-text search tool to parse project booklets (in PDF format) and provide recommendations based on a user-created query string by developing a natural language-based search and recommendation system based on TF-IDF and embedding-based similarity scoring.
 
-## Installation Guide
+## Requirements
+* Python version: 3.11 - 3.14
+* Acess to `pip`, `venv`, and optionally `git`
+
+## Installation guide
 Follow these steps exactly for the program to work.
 ### Create a virtual environment
 ```
