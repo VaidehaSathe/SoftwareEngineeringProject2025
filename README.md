@@ -43,7 +43,7 @@ pip install -i https://test.pypi.org/simple/ \
 Confirm `project-recommender` is downloaded with `pip list`
   
 ### Install from source (for advanced users, skip if you installed with Pip)
-Clone the repository 
+* Clone the repository 
 ```
 # Clone over https
 git clone https://github.com/VaidehaSathe/SoftwareEngineeringProject2025.git
@@ -51,18 +51,18 @@ git clone https://github.com/VaidehaSathe/SoftwareEngineeringProject2025.git
 # Alternatively, clone over SSH
 git@github.com:VaidehaSathe/SoftwareEngineeringProject2025.git
 ```
-Build the package  
+* Build the package  
 ```
 # Needs to be in source folder
 python -m pip install --upgrade build
 python -m build
 ```
-This creates files in the dist/ folder, like
+* This creates files in the dist/ folder, like
 ```
 dist/project_recommender-0.0.1-py3-none-any.whl
 dist/project_recommender-0.0.1.tar.gz
 ```
-Build from wheel
+* Build from wheel
 ```
 python -m pip install dist/project_recommender-0.0.1-py3-none-any.whl
 ```
