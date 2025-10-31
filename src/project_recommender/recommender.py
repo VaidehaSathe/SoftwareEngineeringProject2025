@@ -1,33 +1,30 @@
-""" 
+"""
 recommender.py
-Date 28/10/2025
---------------------------------------------------------#
-DESCRIPTION: This function takes three inputs:
-1. a user query, which is a string > 15 words
-2. the name of a tokenized .csv file in the tokenized_CSVs folder
-3. the number of projects that the user wants, an integer: N
+Date: 28/10/2025
 
-It resolves the filepath of the csv file with pathlib.
-It vectorizes with TF-IDF and finds cosine similarity between 
-query and tokenized project descriptions.
-It takes the top N projects by similarity, and creates a new dataframe object.
-This has the keys (['title', 'primary_theme', 'supervisors', 'score']
-It returns this new dataframe object.
+Description: Based on a user query and a tokenized CSV file containing project info,
+this function will return a certain number of projects (dedicated by the user)
 
-DO NOT RUN THIS FILE DIRECTLY. If you do, remove the dot from from .preprocessor
-When running this file, go to /SoftwareEngineeringProject2025, then
-PYTHONPATH=src python -m project_recommender.cli recommend "I want biology projects"
---tokenized-csv tokenized_projects_summary.csv
+Inputs: 
+- a user query (string greater than 15 words)
+- the name of a tokenized .csv file in the tokenized_CSVs folder
+- the number of projects that the user wants, an integer: N
 
-Alternatively, do
-# from project root (/SoftwareEngineeringProject2025)
+Outputs:
+- A list of recommended projects, with supervisors and similarity scores
+
+Notes:
+- Do not run this file directly. If you do, remove the dot from .preprocessor
+- When running this file go to /SoftwareEngineeringProject2025, then 
+ PYTHONPATH=src python -m project_recommender.cli recommend "I want biology projects" --tokenized-csv tokenized_projects_summary.csv
+- Alternatively, do (from project root /SoftwareEngineeringProject2025 ):
 pip install -e .
 python -m project_recommender.cli recommend "I want biology projects"
-Test code at bottom.
---------------------------------------------------------#
-"""
-from pathlib import Path
 
+Test code is at the bottom
+"""
+
+from pathlib import Path
 import pandas as pd
 # import nltk
 import numpy as np

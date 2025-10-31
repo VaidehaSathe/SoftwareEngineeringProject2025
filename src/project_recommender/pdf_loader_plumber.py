@@ -7,17 +7,20 @@ Input: All (or single) PDFs inside data/raw_PDFs/
 Output: project_summary.csv to data/project_CSVs/ 
         [title,primary_theme,supervisors,description]
 
-Usage:
-  # Process all PDFs in data/raw_PDFs and write single CSV:
-  python src/project_recommender/pdf_loader_plumber.py
+Notes: 
+This file only runs from terminal when in src/project_recommender
 
-  # Process a single PDF (filename looked for in data/raw_PDFs if not given as a path)
-  python src/project_recommender/pdf_loader_plumber.py somefile.pdf
+How to:
+- Process all PDFs in data/raw_PDFs and write single CSV:
+python src/project_recommender/pdf_loader_plumber.py
 
-  # Specify explicit output file
-  python src/project_recommender/pdf_loader_plumber.py -o data/project_CSVs/my_projects.csv
---------------------------------------------------------#
+- Process a single PDF (filename looked for in data/raw_PDFs if not given as a path)
+python src/project_recommender/pdf_loader_plumber.py somefile.pdf
+
+- Specify explicit output file
+python src/project_recommender/pdf_loader_plumber.py -o data/project_CSVs/my_projects.csv
 """
+
 from pathlib import Path
 import re
 from typing import List, Dict, Optional, Union
@@ -63,7 +66,9 @@ logger.debug("CSV_TOK_OUTPUT_DIR: %s", CSV_TOK_OUTPUT_DIR)
 
 # --- helpers ---
 def normalize(s: Optional[str]) -> str:
-    """Normalise whitespace and convert None to empty string (further cleaning done later)."""
+    """
+    Normalise whitespace and convert None to empty string (further cleaning done later).
+    """
     if s is None:
         return ""
     return re.sub(r"\s+", " ", str(s)).strip()
@@ -131,7 +136,9 @@ def is_label_cell(text: Optional[str], target: Union[str, List[str], set]) -> bo
 
 
 def looks_like_boundary(next_cells: List[str]) -> bool:
-    """Return True if any of the next_cells contains a known boundary label."""
+    """
+    Return True if any of the next_cells contains a known boundary label.
+    """
     for c in next_cells:
         if not c:
             continue
@@ -143,6 +150,11 @@ def looks_like_boundary(next_cells: List[str]) -> bool:
 
 # --- extraction (kept as your logic) ---
 def extract_projects_from_table(table_rows: List[List[Optional[str]]]) -> List[Dict[str, str]]:
+    """
+    Reads a table and extracts project information from it.
+    Each project is a dictionary with "title", "primary_theme", "supervisors", "description"
+    Returns a list of projects - a dictionary with the four items above
+    """
     projects: List[Dict[str, str]] = []
     cur = {"title": "", "primary_theme": "", "supervisors": "", "description": ""}
     i = 0
@@ -269,6 +281,10 @@ def extract_projects_from_table(table_rows: List[List[Optional[str]]]) -> List[D
 
 # --- parse single PDF ---
 def parse_pdf(pdf_path: Union[str, Path]) -> List[Dict[str, str]]:
+    """
+    Opens a project PDF file and returns a list of projects in there.
+    Each project has the values "title", "primary_theme", "supervisors" and "description".
+    """
     pdf_path = Path(pdf_path)
     if not pdf_path.exists():
         raise FileNotFoundError(f"PDF not found: {pdf_path}")
@@ -298,12 +314,18 @@ def parse_pdf(pdf_path: Union[str, Path]) -> List[Dict[str, str]]:
 
 # --- process a single PDF and return list of projects (no csv write) ---
 def projects_from_pdf(pdf_path: Union[str, Path]) -> List[Dict[str, str]]:
+    """
+    Logs the creation of a list of projects
+    """
     logger.info("Parsing PDF: %s", Path(pdf_path).resolve())
     return parse_pdf(pdf_path)
 
 
 # --- process all PDFs into one CSV ---
 def process_all_pdfs_to_one_csv(output_path: Optional[Union[str, Path]] = None) -> Path:
+    """
+    Takes all PDFs in a folder and extracts the information into one single CSV file
+    """
     if output_path is None:
         output_path = DEFAULT_COMBINED_CSV
     output_path = Path(output_path)
@@ -347,6 +369,9 @@ def process_all_pdfs_to_one_csv(output_path: Optional[Union[str, Path]] = None) 
 
 # --- process single PDF into CSV (existing behavior) ---
 def process_pdf_to_csv(pdf_path: Union[str, Path], output_path: Optional[Union[str, Path]] = None) -> Path:
+    """
+    Takes one PDF in a folder and extracts the information into one single CSV file
+    """
     pdf_path = Path(pdf_path)
     if pdf_path.parent == Path(".") or pdf_path.parent == Path(""):
         candidate = RAW_PDF_DIR / pdf_path.name
