@@ -12,7 +12,7 @@ Outputs: Tokenized Text
 """
 
 import pandas as pd
-import nltk 
+import nltk
 
 nltk_resources=['punkt', 'averaged_perceptron_tagger', 'wordnet', 'stopwords']
 
@@ -34,8 +34,8 @@ def add_nltk_resources():
 add_nltk_resources()
 
 from nltk.stem import WordNetLemmatizer
-lemmatizer = WordNetLemmatizer()
 from nltk.corpus import stopwords
+lemmatizer = WordNetLemmatizer()
 
 stop_words = set(stopwords.words('english'))
 
@@ -76,43 +76,96 @@ def preprocess_text(text):
 def data_preprocessor(filename):
     """
     Preprocesses the 'description' column of the input DataFrame.
-    
-    Args:
-        CSV File (.csv): The project list CSV name from the data/project_CSVs folder.
-    Saves:
-        CSV File (.csv): A new CSV with an additional 'tokenized_description' column in data/tokenized_CSVs folder.
-    Returns:
-        None
+
+    Cleans data by:
+      • Removing rows with more than two 'empty' entries overall.
+      • Replacing empty/'empty' descriptions with their corresponding title.
+      • Replacing empty/'empty' supervisor fields or those with >15 words with "parse failed".
+    Then tokenizes the description and saves the tokenized CSV.
     """
 
-    # The input (original) file
-    dataframe = pd.read_csv(f'data/project_CSVs/{filename}')
+    import numpy as np
 
-    def too_many_rows(row):
+    # Load input CSV
+    dataframe = pd.read_csv(f"data/project_CSVs/{filename}")
+
+    # --- Rule 1: remove rows with too many 'empty' entries ---
+    def too_many_empties(row):
         text = " ".join(map(str, row.values)).lower()
-        # Remove row if "empty" appears more than twice
         return text.count("empty") > 2
 
     before_count = len(dataframe)
-    # Drop rows where too_many_rows() is True
-    dataframe = dataframe[~dataframe.apply(too_many_rows, axis=1)]
+    dataframe = dataframe[~dataframe.apply(too_many_empties, axis=1)].reset_index(drop=True)
+
+    # --- Rule 2: fill empty/'empty' descriptions with title ---
+    desc = dataframe["description"].fillna("").astype(str).str.strip()
+    empty_desc_mask = (desc == "") | (desc.str.lower() == "empty")
+    num_filled = empty_desc_mask.sum()
+    if num_filled > 0:
+        dataframe.loc[empty_desc_mask, "description"] = dataframe.loc[empty_desc_mask, "title"]
+        print(f"🧩 Filled {num_filled} empty descriptions with corresponding titles.")
+
+    # --- Rule 3: handle supervisors ---
+    sup = dataframe["supervisors"].fillna("").astype(str).str.strip()
+    too_long_mask = sup.apply(lambda x: len(x.split()) > 15)
+    empty_sup_mask = (sup == "") | (sup.str.lower() == "empty")
+    parse_failed_mask = too_long_mask | empty_sup_mask
+    num_failed = parse_failed_mask.sum()
+    if num_failed > 0:
+        dataframe.loc[parse_failed_mask, "supervisors"] = "parse failed"
+        print(f"⚠️  Marked {num_failed} supervisor entries as 'parse failed' (empty or >15 words).")
+
+    # --- Summary of cleanup ---
     after_count = len(dataframe)
-
-    if before_count - after_count != 0:
-        print(f"🧹 Removed {before_count - after_count} rows containing 'empty' more than twice.")
+    removed = before_count - after_count
+    if removed != 0:
+        print(f"🧹 Removed {removed} rows with too many 'empty' fields.")
     else:
-        print("🧹 No need to remove any rows.")
+        print("🧹 No rows removed for excessive 'empty' fields.")
 
-    # Tokenize the description column
-    dataframe['tokenized_description'] = dataframe['description'].apply(preprocess_text)
+    # --- Tokenize the description column ---
+    dataframe["tokenized_description"] = dataframe["description"].apply(preprocess_text)
 
     # The output (new) file name
     new_filename = f"tokenized_{filename}"
 
     # Save to tokenized_CSVs directory
     dataframe.to_csv(f"data/tokenized_CSVs/{new_filename}", index=False)
+    print(f"💾 Saved cleaned and tokenized CSV to data/tokenized_CSVs/{new_filename}")
 
 
+# Previous code to delete rows
+# def data_preprocessor(filename):
+#     """
+#     Preprocesses the 'description' column of the input DataFrame.
+#     Args:
+#         CSV File (.csv): The project list CSV name from the data/project_CSVs folder.
+#     Saves:
+#         CSV File (.csv): A new CSV with an additional 'tokenized_description'
+#           column in data/tokenized_CSVs folder.
+#     Returns:
+#         None
+#     """
+#     # The input (original) file
+#     dataframe = pd.read_csv(f'data/project_CSVs/{filename}')
+#     def too_many_rows(row):
+#         text = " ".join(map(str, row.values)).lower()
+#         # Remove row if "empty" appears more than twice
+#         return text.count("empty") > 2
+#     before_count = len(dataframe)
+#     # Drop rows where too_many_rows() is True
+#     dataframe = dataframe[~dataframe.apply(too_many_rows, axis=1)]
+#     after_count = len(dataframe)
+#     if before_count - after_count != 0:
+#         print(f"🧹 Removed {before_count - after_count} rows containing 'empty' more than twice.")
+#     else:
+#         print("🧹 No need to remove any rows.")
+#     # Tokenize the description column
+#     dataframe['tokenized_description'] = dataframe['description'].apply(preprocess_text)
+#     # The output (new) file name
+#     new_filename = f"tokenized_{filename}"
+#     # Save to tokenized_CSVs directory
+#     dataframe.to_csv(f"data/tokenized_CSVs/{new_filename}", index=False)
 def query_preprocessor(query):
     """
     Preprocesses the input query string.

@@ -7,6 +7,8 @@ Description: Moves PDF files from a specified directory to a local folder called
 Input: Filepath of a folder containing any PDFs the user wants read
 
 Output: 
+- The folders /data/raw_PDFs, data/project_CSVs, and data/tokenized_CSVs 
+in the repo root (where the script runs from)
 - Moves the PDFs from the local folder to /data/raw_PDFs
 - Prints the directory /data/raw_PDFs, the names of the copied PDFs and the number of copied PDFs
 
@@ -69,14 +71,14 @@ def move_pdf(filepath):
         if directory.is_dir() and directory.name.lower() == "data":
             data_directory = directory
             break
-    if data_directory == None:
+    if data_directory is None:
         return("There is no data directory, or it could not be found")
 
     # Find the directory called 'raw_PDFs'
     for directory in data_directory.iterdir():
         if directory.is_dir() and directory.name == "raw_PDFs":
             raw_PDFs_directory = directory
-    if raw_PDFs_directory == None:
+    if raw_PDFs_directory is None:
         return("There is no raw_PDFs directory, or it could not be found")
 
     # Copies the PDFs into the data directory and counts them
@@ -85,5 +87,6 @@ def move_pdf(filepath):
         destination = raw_PDFs_directory / pdf.name
         shutil.copy2(pdf,destination)
         copied.append(destination)
-    
-    return {"Copied into": raw_PDFs_directory, "Copied files": copied, "Number of files copied": len(copied)}
+
+    return {"Copied into": raw_PDFs_directory, "Copied files": copied,
+            "Number of files copied": len(copied)}

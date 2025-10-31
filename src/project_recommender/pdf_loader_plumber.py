@@ -1,13 +1,11 @@
 """
 pdf_loader_plumber.py
 Date: 28/10/2025
-
-Description: Reads PDFs from data/raw_PDF and re-writes them as CVS into data/projects_CSVs
-with [title,primary_theme,supervisors,description]
-
-Input: PDF files (reads them from data/raw_PDFs directory)
-
-Output: CSVs (writes them from data/projects_CSVs)
+--------------------------------------------------------#
+Description: Reads PDF files and parses into raw text
+Input: All (or single) PDFs inside data/raw_PDFs/
+Output: project_summary.csv to data/project_CSVs/ 
+        [title,primary_theme,supervisors,description]
 
 Notes: 
 This file only runs from terminal when in src/project_recommender
