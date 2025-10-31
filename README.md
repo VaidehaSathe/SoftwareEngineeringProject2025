@@ -77,6 +77,12 @@ title2        supervisor2 department2 0.44
 title3        supervisor3 department3 0.12
 ...
 ```
+Words or phrases in your input prompt that are similar to those in project descriptions return a 'mini-score'. The final similarity score provided with each recommended project is the sum of all of these mini-scores, so is a measure of how many small 'matches' there.
+
+Note that if you put in another prompt and it recommends projects with higher similarity scores than with your previous prompt, it is not necessarily an indicator of a 'better match' - you might have just put more words into the input. On average, the more words you put in, the higher the score.
+
+The input prompt also has to be longer than 15 words, in order to give more meaningful responses.
+
 
 ## Advanced Usage Guide
 In general, each command takes the form `project-recommender <command> [options]`. Each command `load` `process` `tokenize` `all` has several options.
