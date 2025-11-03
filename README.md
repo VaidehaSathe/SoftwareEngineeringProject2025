@@ -53,6 +53,8 @@ git clone https://github.com/VaidehaSathe/SoftwareEngineeringProject2025.git
 
 # Alternatively, clone over SSH
 git@github.com:VaidehaSathe/SoftwareEngineeringProject2025.git
+
+cd SoftwareEngineeringProject2025
 ```
 Build the package  
 ```
